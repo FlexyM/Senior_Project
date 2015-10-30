@@ -12,8 +12,8 @@
     {
         protected void Application_Start()
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<
-                ApplicationDbContext, DbMigrationsConfig>());
+            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<
+            //    ApplicationDbContext, DbMigrationsConfig>());
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
