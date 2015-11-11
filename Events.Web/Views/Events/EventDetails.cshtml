@@ -1,0 +1,42 @@
+﻿@model Events.Web.Models.EventDetailsViewModel
+
+
+@Html.Label(@Model.Title, new { id = "Title" })
+
+@if (Model != null && Model.Description != null)
+{
+    <div class="description"><span>Description: @Model.Description</span></div>
+}
+
+@if (Model != null && Model.Comments != null && Model.Comments.Any())
+{
+    @:Comments:
+    <ul>
+        @foreach (var comment in Model.Comments)
+        {
+            <li>
+                @comment.Text
+                @if (@comment.Author != null)
+                {
+                    @: (by @comment.Author)
+                }
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No comments</p>
+}
+
+@Html.HiddenFor(model => model.Latitude)
+@Html.HiddenFor(model => model.Longitude)
+
+<div class="map" id="map" style="min-height:400px; min-width:400px"></div>
+
+@if (ViewBag.CanEdit)
+{
+    @Html.ActionLink("Edit", "Edit", "Events", new { id = Model.Id }, new { @class = "btn btn-default" })
+    <span></span>
+    @Html.ActionLink("Delete", "Delete", "Events", new { id = Model.Id }, new { @class = "btn btn-default" })
+}

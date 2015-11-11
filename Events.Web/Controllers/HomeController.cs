@@ -34,6 +34,8 @@
             //Getting results from Eventful
             EventfulSearch api = new EventfulSearch();
             api.City = "Atlanta"; //TODO get real value from user input
+            //api.SortOrder = "date";
+            api.Date = "2015111000-2015111500";
             var eventfulEvents = api.Search().ConvertToEventViewModel();
 
             //Add the Eventful Events to the database events and resort       

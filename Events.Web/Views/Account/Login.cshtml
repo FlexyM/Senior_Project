@@ -1,6 +1,8 @@
 ﻿@using Events.Web.Models
 @model LoginViewModel
 @{
+   <br/>
+    <br/>
     ViewBag.Title = "Log in";
 }
 
@@ -39,7 +41,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Log in" class="btn btn-default" />
+                        <input type="submit" value="Log in" class="btn btn-info" />
                     </div>
                 </div>
                 <p>
@@ -52,11 +54,14 @@
             }
         </section>
     </div>
-    <div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>
+</div>
+
+<h2>Or 
+</h2>
+<div class="btn-social">
+    <a class="btn btn-social btn-foursquare">
+        <i class="fa fa-facebook-square"></i> Sign in with Facebook
+    </a>
 </div>
 
 @section Scripts {

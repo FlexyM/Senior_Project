@@ -11,10 +11,12 @@ namespace Events.Web.Controllers
 
     using Microsoft.AspNet.Identity;
     using Events.External;
+    using System.Web;
+    using System.Collections.Generic;
 
-    [Authorize]
     public class EventsController : BaseController
     {
+        [Authorize]
         public ActionResult My()
         {
             string currentUserId = this.User.Identity.GetUserId();
@@ -32,12 +34,14 @@ namespace Events.Web.Controllers
             });
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Create()
         {
             return this.View();
         }
-        
+
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(EventInputModel model)
@@ -63,6 +67,7 @@ namespace Events.Web.Controllers
             return this.View(model);
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Edit(int id)
         {
@@ -77,6 +82,7 @@ namespace Events.Web.Controllers
             return this.View(model);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, EventInputModel model)
@@ -105,6 +111,7 @@ namespace Events.Web.Controllers
             return this.View(model);
         }
 
+        [Authorize]
         [HttpGet]
         public ActionResult Delete(int id)
         {
@@ -120,6 +127,7 @@ namespace Events.Web.Controllers
             return this.View(model);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, EventInputModel model)
@@ -135,6 +143,72 @@ namespace Events.Web.Controllers
             this.db.SaveChanges();
             this.AddNotification("Event deleted.", NotificationType.INFO);
             return this.RedirectToAction("My");
+        }
+
+
+        public ActionResult EventDetailsById(int id, string eventfulId, bool eventfulEvent)
+        {
+            if (!eventfulEvent)
+            {
+                var currentUserId = this.User.Identity.GetUserId();
+                var isAdmin = this.IsAdmin();
+                var eventDetails = this.db.Events
+                    .Where(e => e.Id == id)
+                    .Where(e => e.IsPublic || isAdmin || (e.AuthorId != null && e.AuthorId == currentUserId))
+                    .Select(EventDetailsViewModel.ViewModel)
+                    .FirstOrDefault();
+
+                var isOwner = (eventDetails != null && eventDetails.AuthorId != null &&
+                    eventDetails.AuthorId == currentUserId);
+                this.ViewBag.CanEdit = isOwner || isAdmin;
+
+                return View("EventDetails", eventDetails);
+            }
+            else
+            {
+                this.ViewBag.CanEdit = false;
+                EventDetailsViewModel result = new EventDetailsViewModel();
+
+                EventfulSearch search = new EventfulSearch();
+                search.Id = eventfulId;
+                var eventResult = search.GetEventfulDetails();
+
+                if (eventResult.description != null)
+                    result.Description = HttpUtility.HtmlDecode(eventResult.description);
+                else
+                    result.Description = "No additional details.";
+
+                result.Id = eventfulId;
+
+                result.Title = eventResult.title;
+                result.Address = eventResult.address;
+                result.City = eventResult.city;
+                result.State = eventResult.region;
+                result.Zip = Convert.ToInt32(eventResult.postal_code);
+                result.Latitude = eventResult.latitude;
+                result.Longitude = eventResult.longitude;
+
+                List<CommentViewModel> comments = new List<CommentViewModel>();
+                var r = this.eventfulDb.EventfulComments.Where(c => c.EventfulId == eventfulId).ToList();
+
+
+                if (r != null && r.Any())
+                {
+                    foreach (EventfulComment c in r)
+                    {
+                        CommentViewModel cView = new CommentViewModel();
+
+                        cView.Text = c.Text;
+                        cView.Author = c.AspNetUser.FullName;
+
+                        comments.Add(cView);
+                    }
+                }
+
+                result.Comments = comments;
+
+                return View("EventDetails", result);
+            }
         }
 
         private Event LoadEvent(int id)
