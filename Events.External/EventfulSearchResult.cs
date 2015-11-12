@@ -24,13 +24,13 @@ using System.Xml.Serialization;
 [System.Xml.Serialization.XmlRootAttribute(Namespace="", IsNullable=false)]
 public partial class search {
     
-    private ushort total_itemsField;
-    
-    private byte page_sizeField;
-    
-    private ushort page_countField;
-    
-    private byte page_numberField;
+    private int total_itemsField;
+
+    private int page_sizeField;
+
+    private int page_countField;
+
+    private int page_numberField;
     
     private object page_itemsField;
     
@@ -43,7 +43,8 @@ public partial class search {
     private EventfulEvent[] eventsField;
     
     /// <remarks/>
-    public ushort total_items {
+    public int total_items
+    {
         get {
             return this.total_itemsField;
         }
@@ -53,7 +54,8 @@ public partial class search {
     }
     
     /// <remarks/>
-    public byte page_size {
+    public int page_size
+    {
         get {
             return this.page_sizeField;
         }
@@ -63,7 +65,8 @@ public partial class search {
     }
     
     /// <remarks/>
-    public ushort page_count {
+    public int page_count
+    {
         get {
             return this.page_countField;
         }
@@ -73,7 +76,7 @@ public partial class search {
     }
     
     /// <remarks/>
-    public byte page_number {
+    public int page_number {
         get {
             return this.page_numberField;
         }

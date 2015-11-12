@@ -3,10 +3,10 @@
   <xs:element name="search">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="total_items" type="xs:unsignedShort" />
-        <xs:element name="page_size" type="xs:unsignedByte" />
-        <xs:element name="page_count" type="xs:unsignedShort" />
-        <xs:element name="page_number" type="xs:unsignedByte" />
+        <xs:element name="total_items" type="xs:integer" />
+        <xs:element name="page_size" type="xs:integer" />
+        <xs:element name="page_count" type="xs:integer" />
+        <xs:element name="page_number" type="xs:integer" />
         <xs:element name="page_items" />
         <xs:element name="first_item" />
         <xs:element name="last_item" />
@@ -30,7 +30,7 @@
                     <xs:element name="venue_id" type="xs:string" />
                     <xs:element name="venue_url" type="xs:string" />
                     <xs:element name="venue_name" type="xs:string" />
-                    <xs:element name="venue_display" type="xs:unsignedByte" />
+                    <xs:element name="venue_display" type="xs:integer" />
                     <xs:element name="venue_address" type="xs:string" />
                     <xs:element name="city_name" type="xs:string" />
                     <xs:element name="region_name" type="xs:string" />
@@ -42,7 +42,7 @@
                     <xs:element name="latitude" type="xs:decimal" />
                     <xs:element name="longitude" type="xs:decimal" />
                     <xs:element name="geocode_type" type="xs:string" />
-                    <xs:element name="all_day" type="xs:unsignedByte" />
+                    <xs:element name="all_day" type="xs:boolean" />
                     <xs:element name="recur_string" />
                     <xs:element name="calendar_count" />
                     <xs:element name="comment_count" />
@@ -53,8 +53,8 @@
                     <xs:element name="owner" type="xs:string" />
                     <xs:element name="modified" type="xs:string" />
                     <xs:element name="performers" />
-                    <xs:element name="image" />
-                    <xs:element name="privacy" type="xs:unsignedByte" />
+                    <xs:element name="image"  />
+                    <xs:element name="privacy" type="xs:boolean" />
                     <xs:element name="calendars" />
                     <xs:element name="groups" />
                     <xs:element name="going" />

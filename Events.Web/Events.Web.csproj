@@ -235,6 +235,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\MapHelper.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment-with-locales.min.js" />
@@ -280,7 +281,7 @@
     <Content Include="Views\Manage\ManageLogins.cshtml" />
     <Content Include="Views\Manage\SetPassword.cshtml" />
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
-    <Content Include="Views\Events\_EventDetails.cshtml" />
+    <Content Include="Views\Events\EventDetails.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\EventViewModel.cshtml" />
     <Content Include="Views\Events\My.cshtml" />
     <Content Include="Views\Shared\_Events.cshtml" />

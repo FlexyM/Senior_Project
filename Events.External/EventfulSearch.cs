@@ -23,9 +23,11 @@ namespace Events.External
 
         public string Id { get; set; }
 
-        public string City { get; set; }
+        public string Keyword { get; set; }
 
-        public string Date { get;set;}
+        public string Location { get; set; }
+
+        public string Date { get; set; }
 
         public string SortOrder { get; set; }
 
@@ -42,18 +44,13 @@ namespace Events.External
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
 
-                    HttpResponseMessage response = client.GetAsync(string.Format(@"search?app_key={0}&location={1}&date={2}", apiKey, City, Date)).Result;
+                    HttpResponseMessage response = client.GetAsync(string.Format(@"search?app_key={0}&location={1}&q={2}&date={3}", apiKey, Location, Keyword, Date)).Result;
 
                     XmlSerializer serializer = new XmlSerializer(typeof(search));
                     using (Stream stream = response.Content.ReadAsStreamAsync().Result)
                     {
                         searchResult = (search)serializer.Deserialize(stream);
                     }
-
-                    //else
-                    //{
-                    //    ;//http client call failed
-                    //}
 
                     return searchResult.events.ToList();
 

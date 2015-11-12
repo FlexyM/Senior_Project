@@ -14,6 +14,16 @@ namespace Events.Web.Extensions
 
             foreach (EventfulEvent events in EventfulEvents)
             {
+                string url = null;
+
+                var images = events.image as System.Xml.XmlNode[];
+
+                if (images != null)
+                {
+                    url = images.Any(e => string.Equals(e.Name, "medium", StringComparison.InvariantCultureIgnoreCase)) ?
+                        images.Single(e => string.Equals(e.Name, "medium", StringComparison.InvariantCultureIgnoreCase)).InnerText : null;
+                }
+
                 model.Add(new EventViewModel
                         {
                             EventfulId = events.id,
@@ -21,7 +31,8 @@ namespace Events.Web.Extensions
                             Location = events.venue_address,
                             StartDateTime = DateTime.Parse(events.start_time),
                             Title = events.title,
-                            IsEventfultEvent = true
+                            IsEventfultEvent = true,
+                            ImageURI = url
                         });
             }
 

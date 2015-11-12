@@ -25,6 +25,8 @@
 
         public bool IsEventfultEvent { get { return isEventfulEvent; } set { isEventfulEvent = value; } }
 
+        public string ImageURI { get; set; }
+
         public static Expression<Func<Event, EventViewModel>> ViewModel
         {
             get

@@ -27,24 +27,24 @@
 
                 <!--niraj-->  
                 <div id="location-search" class="clearfix">
-                    <div id="header-location-change">
-                        <input type="text" name="header-location-change" id="inp-header-location-change" value="" data-ta="typeahead-location" placeholder="Atlanta metro area" class="input-xlarge" autocomplete="off" />
-                    </div>
-                    
-                    <div id="search">
-                        <div id="uni-search" class="">
+                    <form id="site-search" action="http://localhost:9999/" method="post">
+                        <div id="header-location-change">
+                            <input type="text" name="location" id="inp-header-location-change" value="" data-ta="typeahead-location" placeholder="Atlanta" class="input-xlarge" autocomplete="off" />
+                        </div>
 
-                            <form id="site-search" action="http://localhost:9999/" method="post">
+                        <div id="search">
+                            <div id="uni-search" class="">
 
                                 <input type="hidden" name="location_type" id="inp-location-type" value="metro_id" />
                                 <input type="hidden" name="location_id" id="inp-location-id" value="12" />
-                                <input type="hidden" name="location" id="inp-location" value="Atlanta metro area" />
+                                <input type="hidden" name="location1" id="inp-location" value="Atlanta metro area" />
                                 <input type="hidden" name="area" id="inp-area" />
-                                <input type="text" name="q" id="inp-uni-search" placeholder="Title or Keyword" value="" data-ta="typeahead-uni-search" class="text-input input-xlarge" autocomplete="off" />
+                                <input type="text" name="keyword" id="inp-uni-search" placeholder="Title or Keyword" value="" data-ta="typeahead-uni-search" class="text-input input-xlarge" autocomplete="off" />
                                 <button id="btn-search-submit" class="search-button btn-group-sm btn-info" type="submit" data-ga-label="Search Button Click">Search</button>
-                            </form>
-                        </div>
-                    </div> <!-- end search -->
+
+                            </div>
+                        </div> <!-- end search -->
+                    </form>
                     
                 </div>
                 <div>
@@ -179,8 +179,10 @@
     </style>
 
 
+    <div style="width: 47%; margin: 0 auto;">
+        <h2>What our customers say</h2>
+    </div>
 
-    <h2>What our customers say</h2>
     <div id="myCarousel" class="carousel slide text-center" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
@@ -249,7 +251,7 @@
     <!--End of Contact Company-->
 
 
-    <!--google maps niraj-->
+    @*<!--google maps niraj-->
     <style>
             #googleMap {
                 width: 100%; /* Span the entire width of the screen */
@@ -285,7 +287,7 @@ marker.setMap(map);
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
+    </script>*@
 
 
     <br/>

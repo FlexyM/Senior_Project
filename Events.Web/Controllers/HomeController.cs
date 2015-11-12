@@ -16,6 +16,48 @@
     public class HomeController : BaseController
     {
         public ActionResult Index()
+        
+       {
+            var events = this.db.Events
+                .OrderBy(e => e.StartDateTime)
+                .Where(e => e.IsPublic)
+                .Select(EventViewModel.ViewModel);
+
+            var upcomingEvents = events.Where(e => e.StartDateTime > DateTime.Now).ToList();
+            var passedEvents = events.Where(e => e.StartDateTime <= DateTime.Now).ToList();
+
+            var result = (new UpcomingPassedEventsViewModel()
+            {
+                UpcomingEvents = upcomingEvents,
+                PassedEvents = passedEvents
+            });
+
+            //Getting results from Eventful
+            EventfulSearch api = new EventfulSearch();
+            api.Location = "Atlanta";
+            api.Date = DateTime.Now.ToString("MMMM");
+
+            var eventfulEvents = api.Search().ConvertToEventViewModel();
+
+
+            //Add the Eventful Events to the database events and resort       
+
+            result.UpcomingEvents = result.UpcomingEvents.Concat(eventfulEvents.Where(e => e.StartDateTime > DateTime.Now)).OrderBy(m => m.StartDateTime);
+            result.PassedEvents = result.PassedEvents.Concat(eventfulEvents.Where(e => e.StartDateTime <= DateTime.Now)).OrderBy(m => m.StartDateTime);
+
+            return View(result);
+        }
+
+        //foreach (var evnt in searchResult.events)
+        //            {
+        //                var images = evnt.image as System.Xml.XmlNode[];
+
+        //                var url = images.Any(e => string.Equals(e.Name, "medium", StringComparison.InvariantCultureIgnoreCase)) ? 
+        //                    images.Single(e => string.Equals(e.Name, "medium", StringComparison.InvariantCultureIgnoreCase)).InnerText : "";
+        //            }
+
+        [HttpPost]
+        public ActionResult Index(string location, string keyword)
         {
             var events = this.db.Events
                 .OrderBy(e => e.StartDateTime)
@@ -33,9 +75,13 @@
 
             //Getting results from Eventful
             EventfulSearch api = new EventfulSearch();
-            api.City = "Atlanta"; //TODO get real value from user input
-            //api.SortOrder = "date";
-            api.Date = "2015111000-2015111500";
+            if(!string.IsNullOrEmpty(keyword))
+                api.Keyword = keyword;
+            if(!string.IsNullOrEmpty(location))
+                api.Location = location;
+            
+            api.Date = DateTime.Now.ToString("MMMM");
+
             var eventfulEvents = api.Search().ConvertToEventViewModel();
 
             //Add the Eventful Events to the database events and resort       

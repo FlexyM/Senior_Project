@@ -3,6 +3,9 @@
 <div class="col-md-4 col-sm-6 col-xs-12">
     <div class="event-box">
         <h2>@Model.Title</h2>
+        <img src="@Model.ImageURI" />
+        <br />
+        
         <span class="date">@Model.StartDateTime</span>
         @if (Model.Duration != null)
         {
@@ -17,15 +20,16 @@
             <div class="location">Location: @Model.Location</div>
         }
         
-        @{
+                @{
             var EventDetailId = "";
 
             if (Model.IsEventfultEvent)
             {
                 EventDetailId = Model.EventfulId;
+                //TODO Look at this? EventDetailId = (!string.IsNullOrEmpty(Model.EventfulId) && Model.EventfulId.Contains("@")) ? "ajsdfas" : Model.EventfulId;
             }
             else
-            { 
+            {
                 EventDetailId = Model.Id.ToString();
             }
         }
