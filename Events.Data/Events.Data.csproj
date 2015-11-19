@@ -44,6 +44,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,13 +55,73 @@
   <ItemGroup>
     <Compile Include="ApplicationUser.cs" />
     <Compile Include="ApplicationDbContext.cs" />
-    <Compile Include="Comment.cs" />
-    <Compile Include="Event.cs" />
+    <Compile Include="AspNetUser.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Comment.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Event.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EventsDataModeldmx.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EventsDataModeldmx.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EventsDataModeldmx.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EventsDataModeldmx.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EventsDataModeldmx.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="EventTag.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FollowRequest.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Followship.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FriendRequest.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Friendship.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\DbMigrationsConfig.cs" />
+    <Compile Include="Tag.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EntityDeploy Include="EventsDataModeldmx.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EventsDataModeldmx.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="EventsDataModeldmx.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EventsDataModeldmx.edmx</DependentUpon>
+      <LastGenOutput>EventsDataModeldmx.Context.cs</LastGenOutput>
+    </None>
+    <None Include="EventsDataModeldmx.edmx.diagram">
+      <DependentUpon>EventsDataModeldmx.edmx</DependentUpon>
+    </None>
+    <None Include="EventsDataModeldmx.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EventsDataModeldmx.edmx</DependentUpon>
+      <LastGenOutput>EventsDataModeldmx.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

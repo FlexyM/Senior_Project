@@ -20,7 +20,7 @@ namespace Events.Web.Controllers
         public ActionResult My()
         {
             string currentUserId = this.User.Identity.GetUserId();
-            var events = this.db.Events
+            var events = this.eventsdb.Events
                 .Where(e => e.AuthorId == currentUserId)
                 .OrderBy(e => e.StartDateTime)
                 .Select(EventViewModel.ViewModel);
@@ -58,8 +58,8 @@ namespace Events.Web.Controllers
                     Location = model.Location,
                     IsPublic = model.IsPublic
                 };
-                this.db.Events.Add(e);
-                this.db.SaveChanges();
+                this.eventsdb.Events.Add(e);
+                this.eventsdb.SaveChanges();
                 this.AddNotification("Event created.", NotificationType.INFO);
                 return this.RedirectToAction("My");
             }
@@ -139,8 +139,8 @@ namespace Events.Web.Controllers
                 return this.RedirectToAction("My");
             }
 
-            this.db.Events.Remove(eventToDelete);
-            this.db.SaveChanges();
+            this.eventsdb.Events.Remove(eventToDelete);
+            this.eventsdb.SaveChanges();
             this.AddNotification("Event deleted.", NotificationType.INFO);
             return this.RedirectToAction("My");
         }
@@ -152,7 +152,7 @@ namespace Events.Web.Controllers
             {
                 var currentUserId = this.User.Identity.GetUserId();
                 var isAdmin = this.IsAdmin();
-                var eventDetails = this.db.Events
+                var eventDetails = this.eventsdb.Events
                     .Where(e => e.Id == id)
                     .Where(e => e.IsPublic || isAdmin || (e.AuthorId != null && e.AuthorId == currentUserId))
                     .Select(EventDetailsViewModel.ViewModel)
@@ -215,7 +215,7 @@ namespace Events.Web.Controllers
         {
             var currentUserId = this.User.Identity.GetUserId();
             var isAdmin = this.IsAdmin();
-            var eventToEdit = this.db.Events
+            var eventToEdit = this.eventsdb.Events
                 .Where(e => e.Id == id)
                 .FirstOrDefault(e => e.AuthorId == currentUserId || isAdmin);
             return eventToEdit;

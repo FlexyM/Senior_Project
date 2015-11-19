@@ -12,15 +12,13 @@ namespace Events.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Comment
+    public partial class EventTag
     {
-        public int Id { get; set; }
-        public string Text { get; set; }
-        public System.DateTime Date { get; set; }
-        public string AuthorId { get; set; }
+        public long EventTagId { get; set; }
         public int EventId { get; set; }
+        public int TagId { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
         public virtual Event Event { get; set; }
+        public virtual Tag Tag { get; set; }
     }
 }

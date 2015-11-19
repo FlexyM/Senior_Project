@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c959ad72a86c42ad990247a64d431fb0" Name="Diagram1">
+        <EntityTypeShape EntityType="EventsDataModel.AspNetUser" Width="1.5" PointX="0.75" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventsDataModel.Comment" Width="1.5" PointX="5.25" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventsDataModel.Event" Width="1.5" PointX="3" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventsDataModel.EventTag" Width="1.5" PointX="5.25" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventsDataModel.FollowRequest" Width="1.5" PointX="3" PointY="10.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventsDataModel.Followship" Width="1.5" PointX="3" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventsDataModel.FriendRequest" Width="1.5" PointX="3" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventsDataModel.Friendship" Width="1.5" PointX="3" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="EventsDataModel.Tag" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
+        <AssociationConnector Association="EventsDataModel.FK_dbo_Comments_dbo_AspNetUsers_AuthorId" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_dbo_Events_dbo_AspNetUsers_AuthorId" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_FollowRequest_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_FollowRequest_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_Followship_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_Followship_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_FriendRequests_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_FriendRequests_FriendRequests" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_Friendship_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_Friendship_AspNetUsers1" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_dbo_Comments_dbo_Events_EventId" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_EventTag_Events" ManuallyRouted="false" />
+        <AssociationConnector Association="EventsDataModel.FK_EventTag_Tag" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

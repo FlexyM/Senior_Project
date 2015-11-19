@@ -6,9 +6,6 @@
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public IDbSet<Event> Events { get; set; }
-
-        public IDbSet<Comment> Comments { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

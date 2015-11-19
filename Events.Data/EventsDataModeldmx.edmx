@@ -1,0 +1,792 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="EventsDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AspNetUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="256" />
+          <Property Name="EmailConfirmed" Type="bit" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar(max)" />
+          <Property Name="SecurityStamp" Type="nvarchar(max)" />
+          <Property Name="PhoneNumber" Type="nvarchar(max)" />
+          <Property Name="PhoneNumberConfirmed" Type="bit" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="bit" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="datetime" />
+          <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Comments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Date" Type="datetime" Nullable="false" />
+          <Property Name="AuthorId" Type="nvarchar" MaxLength="128" />
+          <Property Name="EventId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Events">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="StartDateTime" Type="datetime" Nullable="false" />
+          <Property Name="Duration" Type="time" Precision="7" />
+          <Property Name="AuthorId" Type="nvarchar" MaxLength="128" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Location" Type="nvarchar" MaxLength="200" />
+          <Property Name="IsPublic" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EventTag">
+          <Key>
+            <PropertyRef Name="EventTagId" />
+          </Key>
+          <Property Name="EventTagId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventId" Type="int" Nullable="false" />
+          <Property Name="TagId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FollowRequest">
+          <Key>
+            <PropertyRef Name="FollowRequestId" />
+          </Key>
+          <Property Name="FollowRequestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FromUser" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ToUser" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Approved" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Followship">
+          <Key>
+            <PropertyRef Name="FollowshipId" />
+          </Key>
+          <Property Name="FollowshipId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Follower1" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Follower2" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Approved" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FriendRequests">
+          <Key>
+            <PropertyRef Name="FriendRequestId" />
+          </Key>
+          <Property Name="FriendRequestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FromUser" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ToUser" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Approved" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Friendship">
+          <Key>
+            <PropertyRef Name="FriendshipId" />
+          </Key>
+          <Property Name="FriendshipId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Friend1" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Friend2" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="TagId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="150" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_dbo_Comments_dbo_AspNetUsers_AuthorId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="Comments" Type="Self.Comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comments">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Comments_dbo_Events_EventId">
+          <End Role="Events" Type="Self.Events" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Comments" Type="Self.Comments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comments">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Events_dbo_AspNetUsers_AuthorId">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="0..1" />
+          <End Role="Events" Type="Self.Events" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Events">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventTag_Events">
+          <End Role="Events" Type="Self.Events" Multiplicity="1" />
+          <End Role="EventTag" Type="Self.EventTag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventTag">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventTag_Tag">
+          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+          <End Role="EventTag" Type="Self.EventTag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="TagId" />
+            </Principal>
+            <Dependent Role="EventTag">
+              <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FollowRequest_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="FollowRequest" Type="Self.FollowRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FollowRequest">
+              <PropertyRef Name="FromUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FollowRequest_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="FollowRequest" Type="Self.FollowRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FollowRequest">
+              <PropertyRef Name="ToUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Followship_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Followship" Type="Self.Followship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Followship">
+              <PropertyRef Name="Follower1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Followship_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Followship" Type="Self.Followship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Followship">
+              <PropertyRef Name="Follower2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FriendRequests_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="FriendRequests" Type="Self.FriendRequests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FriendRequests">
+              <PropertyRef Name="ToUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FriendRequests_FriendRequests">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="FriendRequests" Type="Self.FriendRequests" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FriendRequests">
+              <PropertyRef Name="FromUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Friendship_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Friendship" Type="Self.Friendship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Friendship">
+              <PropertyRef Name="Friend1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Friendship_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="Friendship" Type="Self.Friendship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Friendship">
+              <PropertyRef Name="Friend2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EventsDataModelStoreContainer">
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Comments" EntityType="Self.Comments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Events" EntityType="Self.Events" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventTag" EntityType="Self.EventTag" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FollowRequest" EntityType="Self.FollowRequest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Followship" EntityType="Self.Followship" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FriendRequests" EntityType="Self.FriendRequests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Friendship" EntityType="Self.Friendship" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_dbo_Comments_dbo_AspNetUsers_AuthorId" Association="Self.FK_dbo_Comments_dbo_AspNetUsers_AuthorId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Comments" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Comments_dbo_Events_EventId" Association="Self.FK_dbo_Comments_dbo_Events_EventId">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Comments" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Events_dbo_AspNetUsers_AuthorId" Association="Self.FK_dbo_Events_dbo_AspNetUsers_AuthorId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Events" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventTag_Events" Association="Self.FK_EventTag_Events">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="EventTag" EntitySet="EventTag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventTag_Tag" Association="Self.FK_EventTag_Tag">
+            <End Role="Tag" EntitySet="Tag" />
+            <End Role="EventTag" EntitySet="EventTag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FollowRequest_AspNetUsers" Association="Self.FK_FollowRequest_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="FollowRequest" EntitySet="FollowRequest" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FollowRequest_AspNetUsers1" Association="Self.FK_FollowRequest_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="FollowRequest" EntitySet="FollowRequest" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Followship_AspNetUsers" Association="Self.FK_Followship_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Followship" EntitySet="Followship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Followship_AspNetUsers1" Association="Self.FK_Followship_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Followship" EntitySet="Followship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FriendRequests_AspNetUsers" Association="Self.FK_FriendRequests_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="FriendRequests" EntitySet="FriendRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FriendRequests_FriendRequests" Association="Self.FK_FriendRequests_FriendRequests">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="FriendRequests" EntitySet="FriendRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Friendship_AspNetUsers" Association="Self.FK_Friendship_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Friendship" EntitySet="Friendship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Friendship_AspNetUsers1" Association="Self.FK_Friendship_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Friendship" EntitySet="Friendship" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="EventsDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AspNetUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="EmailConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SecurityStamp" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneNumberConfirmed" Type="Boolean" Nullable="false" />
+          <Property Name="TwoFactorEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="LockoutEndDateUtc" Type="DateTime" Precision="3" />
+          <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
+          <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Comments" Relationship="Self.FK_dbo_Comments_dbo_AspNetUsers_AuthorId" FromRole="AspNetUsers" ToRole="Comments" />
+          <NavigationProperty Name="Events" Relationship="Self.FK_dbo_Events_dbo_AspNetUsers_AuthorId" FromRole="AspNetUsers" ToRole="Events" />
+          <NavigationProperty Name="FollowRequests" Relationship="Self.FK_FollowRequest_AspNetUsers" FromRole="AspNetUsers" ToRole="FollowRequest" />
+          <NavigationProperty Name="FollowRequests1" Relationship="Self.FK_FollowRequest_AspNetUsers1" FromRole="AspNetUsers" ToRole="FollowRequest" />
+          <NavigationProperty Name="Followships" Relationship="Self.FK_Followship_AspNetUsers" FromRole="AspNetUsers" ToRole="Followship" />
+          <NavigationProperty Name="Followships1" Relationship="Self.FK_Followship_AspNetUsers1" FromRole="AspNetUsers" ToRole="Followship" />
+          <NavigationProperty Name="FriendRequests" Relationship="Self.FK_FriendRequests_AspNetUsers" FromRole="AspNetUsers" ToRole="FriendRequests" />
+          <NavigationProperty Name="FriendRequests1" Relationship="Self.FK_FriendRequests_FriendRequests" FromRole="AspNetUsers" ToRole="FriendRequests" />
+          <NavigationProperty Name="Friendships" Relationship="Self.FK_Friendship_AspNetUsers" FromRole="AspNetUsers" ToRole="Friendship" />
+          <NavigationProperty Name="Friendships1" Relationship="Self.FK_Friendship_AspNetUsers1" FromRole="AspNetUsers" ToRole="Friendship" />
+        </EntityType>
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AuthorId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_Comments_dbo_AspNetUsers_AuthorId" FromRole="Comments" ToRole="AspNetUsers" />
+          <NavigationProperty Name="Event" Relationship="Self.FK_dbo_Comments_dbo_Events_EventId" FromRole="Comments" ToRole="Events" />
+        </EntityType>
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StartDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Duration" Type="Time" Precision="7" />
+          <Property Name="AuthorId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Location" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="IsPublic" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_Events_dbo_AspNetUsers_AuthorId" FromRole="Events" ToRole="AspNetUsers" />
+          <NavigationProperty Name="Comments" Relationship="Self.FK_dbo_Comments_dbo_Events_EventId" FromRole="Events" ToRole="Comments" />
+          <NavigationProperty Name="EventTags" Relationship="Self.FK_EventTag_Events" FromRole="Events" ToRole="EventTag" />
+        </EntityType>
+        <EntityType Name="EventTag">
+          <Key>
+            <PropertyRef Name="EventTagId" />
+          </Key>
+          <Property Name="EventTagId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <Property Name="TagId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Event" Relationship="Self.FK_EventTag_Events" FromRole="EventTag" ToRole="Events" />
+          <NavigationProperty Name="Tag" Relationship="Self.FK_EventTag_Tag" FromRole="EventTag" ToRole="Tag" />
+        </EntityType>
+        <EntityType Name="FollowRequest">
+          <Key>
+            <PropertyRef Name="FollowRequestId" />
+          </Key>
+          <Property Name="FollowRequestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FromUser" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ToUser" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Approved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_FollowRequest_AspNetUsers" FromRole="FollowRequest" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_FollowRequest_AspNetUsers1" FromRole="FollowRequest" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="Followship">
+          <Key>
+            <PropertyRef Name="FollowshipId" />
+          </Key>
+          <Property Name="FollowshipId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Follower1" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Follower2" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Approved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Followship_AspNetUsers" FromRole="Followship" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_Followship_AspNetUsers1" FromRole="Followship" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="FriendRequest">
+          <Key>
+            <PropertyRef Name="FriendRequestId" />
+          </Key>
+          <Property Name="FriendRequestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FromUser" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ToUser" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Approved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_FriendRequests_AspNetUsers" FromRole="FriendRequests" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_FriendRequests_FriendRequests" FromRole="FriendRequests" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="Friendship">
+          <Key>
+            <PropertyRef Name="FriendshipId" />
+          </Key>
+          <Property Name="FriendshipId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Friend1" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Friend2" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_Friendship_AspNetUsers" FromRole="Friendship" ToRole="AspNetUsers" />
+          <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_Friendship_AspNetUsers1" FromRole="Friendship" ToRole="AspNetUsers" />
+        </EntityType>
+        <EntityType Name="Tag">
+          <Key>
+            <PropertyRef Name="TagId" />
+          </Key>
+          <Property Name="TagId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="EventTags" Relationship="Self.FK_EventTag_Tag" FromRole="Tag" ToRole="EventTag" />
+        </EntityType>
+        <Association Name="FK_dbo_Comments_dbo_AspNetUsers_AuthorId">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
+          <End Role="Comments" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comments">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Events_dbo_AspNetUsers_AuthorId">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="0..1" />
+          <End Role="Events" Type="Self.Event" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Events">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FollowRequest_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
+          <End Role="FollowRequest" Type="Self.FollowRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FollowRequest">
+              <PropertyRef Name="FromUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FollowRequest_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
+          <End Role="FollowRequest" Type="Self.FollowRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FollowRequest">
+              <PropertyRef Name="ToUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Followship_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
+          <End Role="Followship" Type="Self.Followship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Followship">
+              <PropertyRef Name="Follower1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Followship_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
+          <End Role="Followship" Type="Self.Followship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Followship">
+              <PropertyRef Name="Follower2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FriendRequests_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
+          <End Role="FriendRequests" Type="Self.FriendRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FriendRequests">
+              <PropertyRef Name="ToUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FriendRequests_FriendRequests">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
+          <End Role="FriendRequests" Type="Self.FriendRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FriendRequests">
+              <PropertyRef Name="FromUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Friendship_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
+          <End Role="Friendship" Type="Self.Friendship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Friendship">
+              <PropertyRef Name="Friend1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Friendship_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
+          <End Role="Friendship" Type="Self.Friendship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Friendship">
+              <PropertyRef Name="Friend2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_Comments_dbo_Events_EventId">
+          <End Role="Events" Type="Self.Event" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Comments" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Comments">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventTag_Events">
+          <End Role="Events" Type="Self.Event" Multiplicity="1" />
+          <End Role="EventTag" Type="Self.EventTag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventTag">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventTag_Tag">
+          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+          <End Role="EventTag" Type="Self.EventTag" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tag">
+              <PropertyRef Name="TagId" />
+            </Principal>
+            <Dependent Role="EventTag">
+              <PropertyRef Name="TagId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EventsDataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+          <EntitySet Name="Comments" EntityType="Self.Comment" />
+          <EntitySet Name="Events" EntityType="Self.Event" />
+          <EntitySet Name="EventTags" EntityType="Self.EventTag" />
+          <EntitySet Name="FollowRequests" EntityType="Self.FollowRequest" />
+          <EntitySet Name="Followships" EntityType="Self.Followship" />
+          <EntitySet Name="FriendRequests" EntityType="Self.FriendRequest" />
+          <EntitySet Name="Friendships" EntityType="Self.Friendship" />
+          <EntitySet Name="Tags" EntityType="Self.Tag" />
+          <AssociationSet Name="FK_dbo_Comments_dbo_AspNetUsers_AuthorId" Association="Self.FK_dbo_Comments_dbo_AspNetUsers_AuthorId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Comments" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Events_dbo_AspNetUsers_AuthorId" Association="Self.FK_dbo_Events_dbo_AspNetUsers_AuthorId">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Events" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FollowRequest_AspNetUsers" Association="Self.FK_FollowRequest_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="FollowRequest" EntitySet="FollowRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FollowRequest_AspNetUsers1" Association="Self.FK_FollowRequest_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="FollowRequest" EntitySet="FollowRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Followship_AspNetUsers" Association="Self.FK_Followship_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Followship" EntitySet="Followships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Followship_AspNetUsers1" Association="Self.FK_Followship_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Followship" EntitySet="Followships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FriendRequests_AspNetUsers" Association="Self.FK_FriendRequests_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="FriendRequests" EntitySet="FriendRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FriendRequests_FriendRequests" Association="Self.FK_FriendRequests_FriendRequests">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="FriendRequests" EntitySet="FriendRequests" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Friendship_AspNetUsers" Association="Self.FK_Friendship_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Friendship" EntitySet="Friendships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Friendship_AspNetUsers1" Association="Self.FK_Friendship_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="Friendship" EntitySet="Friendships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_Comments_dbo_Events_EventId" Association="Self.FK_dbo_Comments_dbo_Events_EventId">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="Comments" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventTag_Events" Association="Self.FK_EventTag_Events">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="EventTag" EntitySet="EventTags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventTag_Tag" Association="Self.FK_EventTag_Tag">
+            <End Role="Tag" EntitySet="Tags" />
+            <End Role="EventTag" EntitySet="EventTags" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EventsDataModelStoreContainer" CdmEntityContainer="EventsDataEntities">
+          <EntitySetMapping Name="AspNetUsers">
+            <EntityTypeMapping TypeName="EventsDataModel.AspNetUser">
+              <MappingFragment StoreEntitySet="AspNetUsers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Comments">
+            <EntityTypeMapping TypeName="EventsDataModel.Comment">
+              <MappingFragment StoreEntitySet="Comments">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Text" ColumnName="Text" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="AuthorId" ColumnName="AuthorId" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Events">
+            <EntityTypeMapping TypeName="EventsDataModel.Event">
+              <MappingFragment StoreEntitySet="Events">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="StartDateTime" ColumnName="StartDateTime" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="AuthorId" ColumnName="AuthorId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="IsPublic" ColumnName="IsPublic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventTags">
+            <EntityTypeMapping TypeName="EventsDataModel.EventTag">
+              <MappingFragment StoreEntitySet="EventTag">
+                <ScalarProperty Name="EventTagId" ColumnName="EventTagId" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
+                <ScalarProperty Name="TagId" ColumnName="TagId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FollowRequests">
+            <EntityTypeMapping TypeName="EventsDataModel.FollowRequest">
+              <MappingFragment StoreEntitySet="FollowRequest">
+                <ScalarProperty Name="FollowRequestId" ColumnName="FollowRequestId" />
+                <ScalarProperty Name="FromUser" ColumnName="FromUser" />
+                <ScalarProperty Name="ToUser" ColumnName="ToUser" />
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Followships">
+            <EntityTypeMapping TypeName="EventsDataModel.Followship">
+              <MappingFragment StoreEntitySet="Followship">
+                <ScalarProperty Name="FollowshipId" ColumnName="FollowshipId" />
+                <ScalarProperty Name="Follower1" ColumnName="Follower1" />
+                <ScalarProperty Name="Follower2" ColumnName="Follower2" />
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FriendRequests">
+            <EntityTypeMapping TypeName="EventsDataModel.FriendRequest">
+              <MappingFragment StoreEntitySet="FriendRequests">
+                <ScalarProperty Name="FriendRequestId" ColumnName="FriendRequestId" />
+                <ScalarProperty Name="FromUser" ColumnName="FromUser" />
+                <ScalarProperty Name="ToUser" ColumnName="ToUser" />
+                <ScalarProperty Name="Approved" ColumnName="Approved" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Friendships">
+            <EntityTypeMapping TypeName="EventsDataModel.Friendship">
+              <MappingFragment StoreEntitySet="Friendship">
+                <ScalarProperty Name="FriendshipId" ColumnName="FriendshipId" />
+                <ScalarProperty Name="Friend1" ColumnName="Friend1" />
+                <ScalarProperty Name="Friend2" ColumnName="Friend2" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tags">
+            <EntityTypeMapping TypeName="EventsDataModel.Tag">
+              <MappingFragment StoreEntitySet="Tag">
+                <ScalarProperty Name="TagId" ColumnName="TagId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

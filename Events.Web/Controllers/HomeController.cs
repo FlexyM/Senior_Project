@@ -18,7 +18,7 @@
         public ActionResult Index()
         
        {
-            var events = this.db.Events
+            var events = this.eventsdb.Events
                 .OrderBy(e => e.StartDateTime)
                 .Where(e => e.IsPublic)
                 .Select(EventViewModel.ViewModel);
@@ -59,7 +59,7 @@
         [HttpPost]
         public ActionResult Index(string location, string keyword)
         {
-            var events = this.db.Events
+            var events = this.eventsdb.Events
                 .OrderBy(e => e.StartDateTime)
                 .Where(e => e.IsPublic)
                 .Select(EventViewModel.ViewModel);
@@ -98,7 +98,7 @@
             {
                 var currentUserId = this.User.Identity.GetUserId();
                 var isAdmin = this.IsAdmin();
-                var eventDetails = this.db.Events
+                var eventDetails = this.eventsdb.Events
                     .Where(e => e.Id == id)
                     .Where(e => e.IsPublic || isAdmin || (e.AuthorId != null && e.AuthorId == currentUserId))
                     .Select(EventDetailsViewModel.ViewModel)

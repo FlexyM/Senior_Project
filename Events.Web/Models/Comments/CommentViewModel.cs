@@ -19,7 +19,7 @@
                 return c => new CommentViewModel()
                 {
                     Text = c.Text,
-                    Author = c.Author.FullName
+                    Author = c.AspNetUser.FullName
                 };
             }
         }

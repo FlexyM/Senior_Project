@@ -13,6 +13,7 @@ namespace Events.Web.Controllers
     public abstract class BaseController : Controller
     {
         protected ApplicationDbContext db = new ApplicationDbContext();
+        protected EventsDataEntities eventsdb = new EventsDataEntities();
         protected EventfulEntities eventfulDb = new EventfulEntities();
 
         public bool IsAdmin()

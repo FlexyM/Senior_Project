@@ -12,15 +12,13 @@ namespace Events.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Comment
+    public partial class Friendship
     {
-        public int Id { get; set; }
-        public string Text { get; set; }
-        public System.DateTime Date { get; set; }
-        public string AuthorId { get; set; }
-        public int EventId { get; set; }
+        public int FriendshipId { get; set; }
+        public string Friend1 { get; set; }
+        public string Friend2 { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual Event Event { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

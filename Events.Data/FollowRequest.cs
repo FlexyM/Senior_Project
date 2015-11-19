@@ -12,15 +12,14 @@ namespace Events.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Comment
+    public partial class FollowRequest
     {
-        public int Id { get; set; }
-        public string Text { get; set; }
-        public System.DateTime Date { get; set; }
-        public string AuthorId { get; set; }
-        public int EventId { get; set; }
+        public int FollowRequestId { get; set; }
+        public string FromUser { get; set; }
+        public string ToUser { get; set; }
+        public bool Approved { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
-        public virtual Event Event { get; set; }
+        public virtual AspNetUser AspNetUser1 { get; set; }
     }
 }

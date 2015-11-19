@@ -43,7 +43,7 @@ namespace Events.Web.Controllers
                 {
                     string guid = User.Identity.GetUserId();
                     //Get the user
-                    AspNetUser user = this.eventfulDb.AspNetUsers.Single(u => u.Id.Equals(guid, StringComparison.InvariantCultureIgnoreCase));
+                    Events.External.AspNetUser user = this.eventfulDb.AspNetUsers.Single(u => u.Id.Equals(guid, StringComparison.InvariantCultureIgnoreCase));
 
                     //Create the comment
                     EventfulComment comment = new EventfulComment();
@@ -60,15 +60,15 @@ namespace Events.Web.Controllers
                 {
                     //Create the comment
                     Comment comment = new Comment();
-                    comment.Event = this.db.Events.Single(e => e.Id == id);
+                    comment.Event = this.eventsdb.Events.Single(e => e.Id == id);
                     comment.AuthorId = User.Identity.GetUserId();
                     comment.Date = DateTime.Now;
                     comment.EventId = id;
                     comment.Text = Text;
 
                     //Save
-                    this.db.Comments.Add(comment);
-                    this.db.SaveChanges();
+                    this.eventsdb.Comments.Add(comment);
+                    this.eventsdb.SaveChanges();
                 }
                 return RedirectToAction("Index", "Home");
             }

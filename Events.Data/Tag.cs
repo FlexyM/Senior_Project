@@ -12,25 +12,16 @@ namespace Events.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Event
+    public partial class Tag
     {
-        public Event()
+        public Tag()
         {
-            this.Comments = new HashSet<Comment>();
             this.EventTags = new HashSet<EventTag>();
         }
     
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public System.DateTime StartDateTime { get; set; }
-        public Nullable<System.TimeSpan> Duration { get; set; }
-        public string AuthorId { get; set; }
-        public string Description { get; set; }
-        public string Location { get; set; }
-        public bool IsPublic { get; set; }
+        public int TagId { get; set; }
+        public string Name { get; set; }
     
-        public virtual AspNetUser AspNetUser { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<EventTag> EventTags { get; set; }
     }
 }
