@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Events.Web.Models.Friends.FriendsModel>
+
+@{
+    ViewBag.Title = "My Friends";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>FirendsView</h2>
+
+<form id="site-search" action="http://localhost:9999/Friends/AddFriend/" method="get">
+    <div id="search">
+        <input type="text" name="emailAddress" id="inp-uni-search" placeholder="User Email Address" value="" data-ta="typeahead-uni-search" class="text-input input-xlarge" autocomplete="off" />
+        <button id="btn-search-submit" class="search-button btn-group-sm btn-info" type="submit" data-ga-label="Search Button Click">Search</button>
+    </div>
+</form>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) |
+            
+            @Html.ActionLink("Follow", "Follow", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,5 +1,5 @@
 ﻿using System.Web.Mvc;
-
+using System.Linq;
 using Events.Data;
 
 using Microsoft.AspNet.Identity;

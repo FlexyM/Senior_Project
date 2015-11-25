@@ -176,6 +176,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\EventsController.cs" />
+    <Compile Include="Controllers\FriendsController.cs" />
     <Compile Include="Extensions\EventfulExtensions.cs" />
     <Compile Include="Extensions\NotificationExtensions.cs" />
     <Compile Include="Models\Comments\CommentViewModel.cs" />
@@ -188,6 +189,7 @@
     <Compile Include="Models\Events\EventDetailsViewModel.cs" />
     <Compile Include="Models\Events\EventInputModel.cs" />
     <Compile Include="Models\Events\EventViewModel.cs" />
+    <Compile Include="Models\Friends\FriendsModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Events\UpcomingPassedEventsViewModel.cs" />
     <Compile Include="Startup.cs" />
@@ -291,6 +293,7 @@
     <Content Include="Views\Events\Create.cshtml" />
     <Content Include="Views\Shared\_Notifications.cshtml" />
     <Content Include="Views\Comment\AddEventfulComment.cshtml" />
+    <Content Include="Views\Friends\FriendsView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
