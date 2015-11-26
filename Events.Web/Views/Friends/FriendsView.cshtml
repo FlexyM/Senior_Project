@@ -1,12 +1,11 @@
-﻿@model IEnumerable<Events.Web.Models.Friends.FriendsModel>
+﻿@model Events.Web.Models.Friends.FriendsIndexPageModel
 
 @{
     ViewBag.Title = "My Friends";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>FirendsView</h2>
-
+<h5>Add new friend:</h5>
 <form id="site-search" action="http://localhost:9999/Friends/AddFriend/" method="get">
     <div id="search">
         <input type="text" name="emailAddress" id="inp-uni-search" placeholder="User Email Address" value="" data-ta="typeahead-uni-search" class="text-input input-xlarge" autocomplete="off" />
@@ -14,19 +13,25 @@
     </div>
 </form>
 
+<h3>Friends</h3>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.FullName)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayName("Full Name")
+        </th>
+        <th>
+            @Html.DisplayName("Email")
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.Friends) {
     <tr>
+        <td>
+            @Html.HiddenFor(modelItem => item.Id)
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.FullName)
         </td>
@@ -34,11 +39,82 @@
             @Html.DisplayFor(modelItem => item.Email)
         </td>
         <td>
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new {  id = item.Id }) |
             
-            @Html.ActionLink("Follow", "Follow", new { /* id=item.PrimaryKey */ })
+            @Html.ActionLink("Follow", "Follow", new { id = item.Id })
         </td>
     </tr>
 }
+
+</table>
+
+<br />
+
+<h3>Pending Friend Requests</h3>
+<table class="table">
+    <tr>
+        <th>
+        </th>
+        <th>
+            @Html.DisplayName("From")
+        </th>
+        <th>
+            @Html.DisplayName("Email")
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.PendingRequests)
+    {
+        <tr>
+            <td>
+                @Html.HiddenFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.ActionLink("Accept", "Accept", new { id = item.Id }) |
+
+                @Html.ActionLink("Decline", "Decline", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>    
+
+<br />
+
+<h3>Sent Requests</h3>
+<table class="table">
+    <tr>
+        <th>
+        </th>
+        <th>
+            @Html.DisplayName("To")
+        </th>
+        <th>
+            @Html.DisplayName("Email")
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.SentRequests)
+    {
+        <tr>
+            <td>
+                @Html.HiddenFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+        </tr>
+    }
 
 </table>

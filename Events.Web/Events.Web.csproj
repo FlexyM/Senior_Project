@@ -189,6 +189,7 @@
     <Compile Include="Models\Events\EventDetailsViewModel.cs" />
     <Compile Include="Models\Events\EventInputModel.cs" />
     <Compile Include="Models\Events\EventViewModel.cs" />
+    <Compile Include="Models\Friends\FriendsIndexPageModel.cs" />
     <Compile Include="Models\Friends\FriendsModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Events\UpcomingPassedEventsViewModel.cs" />
@@ -294,6 +295,7 @@
     <Content Include="Views\Shared\_Notifications.cshtml" />
     <Content Include="Views\Comment\AddEventfulComment.cshtml" />
     <Content Include="Views\Friends\FriendsView.cshtml" />
+    <Content Include="Views\Friends\NonFriendsView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

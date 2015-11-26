@@ -18,6 +18,7 @@ namespace Events.Data
         public string FromUser { get; set; }
         public string ToUser { get; set; }
         public bool Approved { get; set; }
+        public bool Declined { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual AspNetUser AspNetUser1 { get; set; }

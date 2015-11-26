@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EventsDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EventsDataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AspNetUsers">
           <Key>
             <PropertyRef Name="Id" />
@@ -80,6 +80,7 @@
           <Property Name="FromUser" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="ToUser" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="Approved" Type="bit" Nullable="false" />
+          <Property Name="Declined" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="Friendship">
           <Key>
@@ -317,8 +318,7 @@
             <End Role="Friendship" EntitySet="Friendship" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EventsDataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -420,6 +420,7 @@
           <Property Name="Approved" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_FriendRequests_AspNetUsers" FromRole="FriendRequests" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_FriendRequests_FriendRequests" FromRole="FriendRequests" ToRole="AspNetUsers" />
+          <Property Name="Declined" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Friendship">
           <Key>
@@ -742,6 +743,7 @@
           <EntitySetMapping Name="FriendRequests">
             <EntityTypeMapping TypeName="EventsDataModel.FriendRequest">
               <MappingFragment StoreEntitySet="FriendRequests">
+                <ScalarProperty Name="Declined" ColumnName="Declined" />
                 <ScalarProperty Name="FriendRequestId" ColumnName="FriendRequestId" />
                 <ScalarProperty Name="FromUser" ColumnName="FromUser" />
                 <ScalarProperty Name="ToUser" ColumnName="ToUser" />
