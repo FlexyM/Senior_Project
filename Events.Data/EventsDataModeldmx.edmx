@@ -33,6 +33,14 @@
           <Property Name="AuthorId" Type="nvarchar" MaxLength="128" />
           <Property Name="EventId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="EventImage">
+          <Key>
+            <PropertyRef Name="EventImageId" />
+          </Key>
+          <Property Name="EventImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventId" Type="int" Nullable="false" />
+          <Property Name="ImageName" Type="varchar" MaxLength="500" Nullable="false" />
+        </EntityType>
         <EntityType Name="Events">
           <Key>
             <PropertyRef Name="Id" />
@@ -132,6 +140,18 @@
             </Principal>
             <Dependent Role="Events">
               <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventImage_Events">
+          <End Role="Events" Type="Self.Events" Multiplicity="1" />
+          <End Role="EventImage" Type="Self.EventImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventImage">
+              <PropertyRef Name="EventId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -258,6 +278,7 @@
         <EntityContainer Name="EventsDataModelStoreContainer">
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Comments" EntityType="Self.Comments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventImage" EntityType="Self.EventImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Events" EntityType="Self.Events" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EventTag" EntityType="Self.EventTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FollowRequest" EntityType="Self.FollowRequest" Schema="dbo" store:Type="Tables" />
@@ -276,6 +297,10 @@
           <AssociationSet Name="FK_dbo_Events_dbo_AspNetUsers_AuthorId" Association="Self.FK_dbo_Events_dbo_AspNetUsers_AuthorId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Events" EntitySet="Events" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventImage_Events" Association="Self.FK_EventImage_Events">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="EventImage" EntitySet="EventImage" />
           </AssociationSet>
           <AssociationSet Name="FK_EventTag_Events" Association="Self.FK_EventTag_Events">
             <End Role="Events" EntitySet="Events" />
@@ -377,6 +402,7 @@
           <NavigationProperty Name="AspNetUser" Relationship="Self.FK_dbo_Events_dbo_AspNetUsers_AuthorId" FromRole="Events" ToRole="AspNetUsers" />
           <NavigationProperty Name="Comments" Relationship="Self.FK_dbo_Comments_dbo_Events_EventId" FromRole="Events" ToRole="Comments" />
           <NavigationProperty Name="EventTags" Relationship="Self.FK_EventTag_Events" FromRole="Events" ToRole="EventTag" />
+          <NavigationProperty Name="EventImages" Relationship="EventsDataModel.FK_EventImage_Events" FromRole="Event" ToRole="EventImage" />
         </EntityType>
         <EntityType Name="EventTag">
           <Key>
@@ -660,7 +686,33 @@
             <End Role="Tag" EntitySet="Tags" />
             <End Role="EventTag" EntitySet="EventTags" />
           </AssociationSet>
+          <EntitySet Name="EventImages" EntityType="EventsDataModel.EventImage" />
+          <AssociationSet Name="FK_EventImage_Events" Association="EventsDataModel.FK_EventImage_Events">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="EventImage" EntitySet="EventImages" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="EventImage">
+          <Key>
+            <PropertyRef Name="EventImageId" />
+          </Key>
+          <Property Name="EventImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <Property Name="ImageName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Event" Relationship="EventsDataModel.FK_EventImage_Events" FromRole="EventImage" ToRole="Event" />
+        </EntityType>
+        <Association Name="FK_EventImage_Events">
+          <End Type="EventsDataModel.Event" Role="Event" Multiplicity="1" />
+          <End Type="EventsDataModel.EventImage" Role="EventImage" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventImage">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -765,6 +817,15 @@
               <MappingFragment StoreEntitySet="Tag">
                 <ScalarProperty Name="TagId" ColumnName="TagId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventImages">
+            <EntityTypeMapping TypeName="EventsDataModel.EventImage">
+              <MappingFragment StoreEntitySet="EventImage">
+                <ScalarProperty Name="ImageName" ColumnName="ImageName" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
+                <ScalarProperty Name="EventImageId" ColumnName="EventImageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

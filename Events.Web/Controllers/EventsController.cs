@@ -13,6 +13,7 @@ namespace Events.Web.Controllers
     using Events.External;
     using System.Web;
     using System.Collections.Generic;
+    using System.IO;
 
     public class EventsController : BaseController
     {
@@ -58,8 +59,15 @@ namespace Events.Web.Controllers
                     Location = model.Location,
                     IsPublic = model.IsPublic
                 };
+
                 this.eventsdb.Events.Add(e);
                 this.eventsdb.SaveChanges();
+                
+                if(Request.Files != null && Request.Files.Count > 0)
+                {
+                    SaveImages(e.Id);
+                }
+
                 this.AddNotification("Event created.", NotificationType.INFO);
                 return this.RedirectToAction("My");
             }
@@ -145,7 +153,6 @@ namespace Events.Web.Controllers
             return this.RedirectToAction("My");
         }
 
-
         public ActionResult EventDetailsById(int id, string eventfulId, bool eventfulEvent)
         {
             if (!eventfulEvent)
@@ -219,6 +226,28 @@ namespace Events.Web.Controllers
                 .Where(e => e.Id == id)
                 .FirstOrDefault(e => e.AuthorId == currentUserId || isAdmin);
             return eventToEdit;
+        }
+
+        private void SaveImages(int eventId)
+        {
+            for(int i = 0; i < Request.Files.Count; i++)
+            {
+                if (Request.Files[i].ContentLength > 0 && Request.Files[i].IsImage())
+                {                    
+                    var path = Server.MapPath("~/App_Data/Event_" + eventId.ToString());
+
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    Request.Files[i].SaveAs(Path.Combine(path, Request.Files[i].FileName));
+
+                    EventImage image = new EventImage();
+                    image.EventId = eventId;
+                    image.ImageName = Request.Files[i].FileName;
+                    eventsdb.EventImages.Add(image);
+                }
+            }
+            eventsdb.SaveChanges();
         }
     }
 }

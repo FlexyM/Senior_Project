@@ -27,6 +27,8 @@
         <AssociationConnector Association="EventsDataModel.FK_dbo_Comments_dbo_Events_EventId" ManuallyRouted="false" />
         <AssociationConnector Association="EventsDataModel.FK_EventTag_Events" ManuallyRouted="false" />
         <AssociationConnector Association="EventsDataModel.FK_EventTag_Tag" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="EventsDataModel.EventImage" Width="1.5" PointX="5.25" PointY="3.125" />
+        <AssociationConnector Association="EventsDataModel.FK_EventImage_Events" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
