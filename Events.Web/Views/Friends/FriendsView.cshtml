@@ -77,9 +77,9 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.ActionLink("Accept", "Accept", new { id = item.Id }) |
+                @Html.ActionLink("Accept", "AcceptFriend", new { id = item.Id }) |
 
-                @Html.ActionLink("Decline", "Decline", new { id = item.Id })
+                @Html.ActionLink("Decline", "DeclineFriend", new { id = item.Id })
             </td>
         </tr>
     }

@@ -107,6 +107,48 @@ namespace Events.Web.Controllers
             return Redirect("~/Friends/Index");
         }
 
+        public ActionResult AcceptFriend(string id)
+        {
+            var currentUser = this.User.Identity.GetUserId();
+
+            var friendRequest = eventsdb.FriendRequests.Where(fr => (fr.FromUser.Equals(id, StringComparison.InvariantCultureIgnoreCase)
+                                                              && fr.ToUser.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase))
+                                                        || (fr.FromUser.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase)
+                                                              && fr.ToUser.Equals(id, StringComparison.InvariantCultureIgnoreCase))).ToList();
+
+            foreach (var request in friendRequest)
+            {
+                request.Approved = true;
+                request.Declined = false;
+            }
+
+            eventsdb.Friendships.Add(new Friendship() { Friend1 = currentUser, Friend2 = id });
+
+            eventsdb.SaveChanges();
+
+            return Redirect("~/Friends/Index");
+        }
+
+        public ActionResult DeclineFriend(string id)
+        {
+            var currentUser = this.User.Identity.GetUserId();
+
+            var friendRequest = eventsdb.FriendRequests.Where(fr => (fr.FromUser.Equals(id, StringComparison.InvariantCultureIgnoreCase)
+                                                              && fr.ToUser.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase))
+                                                        || (fr.FromUser.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase)
+                                                              && fr.ToUser.Equals(id, StringComparison.InvariantCultureIgnoreCase))).ToList();
+
+            foreach (var request in friendRequest)
+            {
+                request.Approved = false;
+                request.Declined = true;
+            }
+
+            eventsdb.SaveChanges();
+
+            return Redirect("~/Friends/Index");
+        }
+
         //
         // POST: /Friends/Delete/5
         [HttpPost]
