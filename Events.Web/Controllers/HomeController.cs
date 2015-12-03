@@ -1,30 +1,30 @@
-﻿namespace Events.Web.Controllers
+﻿using System;
+using System.Linq;
+using System.Web.Mvc;
+
+using Events.Web.Models;
+using Events.Web.Extensions;
+
+using Microsoft.AspNet.Identity;
+using Events.External;
+using System.Web;
+using System.Collections.Generic;
+using Events.Web.Extensions;
+
+namespace Events.Web.Controllers
 {
-    using System;
-    using System.Linq;
-    using System.Web.Mvc;
-
-    using Events.Web.Models;
-    using Events.Web.Extensions;
-
-    using Microsoft.AspNet.Identity;
-    using Events.External;
-    using System.Web;
-    using System.Collections.Generic;
-
-
     public class HomeController : BaseController
     {
         public ActionResult Index()
-        
-       {
+        {
             var events = this.eventsdb.Events
-                .OrderBy(e => e.StartDateTime)
                 .Where(e => e.IsPublic)
-                .Select(EventViewModel.ViewModel);
+                .OrderBy(e => e.StartDateTime);
 
-            var upcomingEvents = events.Where(e => e.StartDateTime > DateTime.Now).ToList();
-            var passedEvents = events.Where(e => e.StartDateTime <= DateTime.Now).ToList();
+            var eventViews = EventsController.AddImagesToOurEvents(events);
+
+            var upcomingEvents = eventViews.Where(e => e.StartDateTime > DateTime.Now).ToList();
+            var passedEvents = eventViews.Where(e => e.StartDateTime <= DateTime.Now).ToList();
 
             var result = (new UpcomingPassedEventsViewModel()
             {
@@ -42,8 +42,8 @@
 
             //Add the Eventful Events to the database events and resort       
 
-            result.UpcomingEvents = result.UpcomingEvents.Concat(eventfulEvents.Where(e => e.StartDateTime > DateTime.Now)).OrderBy(m => m.StartDateTime);
-            result.PassedEvents = result.PassedEvents.Concat(eventfulEvents.Where(e => e.StartDateTime <= DateTime.Now)).OrderBy(m => m.StartDateTime);
+            result.UpcomingEvents = result.UpcomingEvents.Concat(eventfulEvents.Where(e => e.StartDateTime > DateTime.Now)).OrderBy(m => m.StartDateTime).AddMissingImagesToTheirEvents();
+            result.PassedEvents = result.PassedEvents.Concat(eventfulEvents.Where(e => e.StartDateTime <= DateTime.Now)).OrderBy(m => m.StartDateTime).AddMissingImagesToTheirEvents();
 
             return View(result);
         }
@@ -75,11 +75,11 @@
 
             //Getting results from Eventful
             EventfulSearch api = new EventfulSearch();
-            if(!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(keyword))
                 api.Keyword = keyword;
-            if(!string.IsNullOrEmpty(location))
+            if (!string.IsNullOrEmpty(location))
                 api.Location = location;
-            
+
             api.Date = DateTime.Now.ToString("MMMM");
 
             var eventfulEvents = api.Search().ConvertToEventViewModel();
@@ -130,9 +130,9 @@
                 var r = this.eventfulDb.EventfulComments.Where(c => c.EventfulId == eventfulId).ToList();
 
 
-                if (r!= null && r.Any())
+                if (r != null && r.Any())
                 {
-                    foreach(EventfulComment c in r)
+                    foreach (EventfulComment c in r)
                     {
                         CommentViewModel cView = new CommentViewModel();
 

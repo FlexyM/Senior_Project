@@ -21,13 +21,15 @@ namespace Events.Web.Controllers
         public ActionResult My()
         {
             string currentUserId = this.User.Identity.GetUserId();
+            
             var events = this.eventsdb.Events
                 .Where(e => e.AuthorId == currentUserId)
-                .OrderBy(e => e.StartDateTime)
-                .Select(EventViewModel.ViewModel);
+                .OrderBy(e => e.StartDateTime);
 
-            var upcomingEvents = events.Where(e => e.StartDateTime > DateTime.Now);
-            var passedEvents = events.Where(e => e.StartDateTime <= DateTime.Now);
+            var eventViews = AddImagesToOurEvents(events);
+
+            var upcomingEvents = eventViews.Where(e => e.StartDateTime > DateTime.Now).ToList();
+            var passedEvents = eventViews.Where(e => e.StartDateTime <= DateTime.Now).ToList();
             return View(new UpcomingPassedEventsViewModel()
             {
                 UpcomingEvents = upcomingEvents,
@@ -62,8 +64,8 @@ namespace Events.Web.Controllers
 
                 this.eventsdb.Events.Add(e);
                 this.eventsdb.SaveChanges();
-                
-                if(Request.Files != null && Request.Files.Count > 0)
+
+                if (Request.Files != null && Request.Files.Count > 0)
                 {
                     SaveImages(e.Id);
                 }
@@ -131,7 +133,7 @@ namespace Events.Web.Controllers
             }
 
             var model = EventInputModel.CreateFromEvent(eventToDelete);
-            
+
             return this.View(model);
         }
 
@@ -230,11 +232,11 @@ namespace Events.Web.Controllers
 
         private void SaveImages(int eventId)
         {
-            for(int i = 0; i < Request.Files.Count; i++)
+            for (int i = 0; i < Request.Files.Count; i++)
             {
                 if (Request.Files[i].ContentLength > 0 && Request.Files[i].IsImage())
-                {                    
-                    var path = Server.MapPath("~/App_Data/Event_" + eventId.ToString());
+                {
+                    var path = Server.MapPath("~/EventImages/Event_" + eventId.ToString());
 
                     if (!Directory.Exists(path))
                         Directory.CreateDirectory(path);
@@ -248,6 +250,26 @@ namespace Events.Web.Controllers
                 }
             }
             eventsdb.SaveChanges();
+        }
+
+        internal static EventViewModel[] AddImagesToOurEvents(IOrderedQueryable<Event> events)
+        {
+            var eventIds = events.Select(e => e.Id).ToArray();
+
+            var eventViews = events.Select(EventViewModel.ViewModel).ToArray();
+
+            //TODO: Change if implementing multiple image display
+            var eventImages = (from e in events
+                               select e.EventImages.FirstOrDefault()).ToArray();
+
+            for (int i = 0; i < eventViews.Length; i++)
+            {
+                if (eventImages[i] != null)
+                    eventViews[i].ImageURI = "http://localhost:9999/EventImages/Event_" + eventIds[i].ToString() + "/" + eventImages[i].ImageName;
+                else
+                    eventViews[i].ImageURI = "http://localhost:9999/EventImages/Default/img.jpg";
+            }
+            return eventViews;
         }
     }
 }

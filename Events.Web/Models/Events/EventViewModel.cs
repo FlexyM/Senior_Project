@@ -38,7 +38,7 @@
                     StartDateTime = e.StartDateTime,
                     Duration = e.Duration,
                     Location = e.Location,
-                    Author = e.AspNetUser.FullName
+                    Author = e.AspNetUser.FullName,
                 };
             }
         }

@@ -12,8 +12,6 @@ namespace Events.Web.Controllers
     [Authorize]
     public class FriendsController : BaseController
     {
-        //
-        // GET: /Friends/
         public ActionResult Index()
         {
             FriendsIndexPageModel model = new FriendsIndexPageModel();
@@ -64,8 +62,6 @@ namespace Events.Web.Controllers
             return View("FriendsView", model);
         }
 
-        //
-        // GET: /Friends/Create
         public ActionResult AddFriend(string emailAddress)
         {
             string userid = this.User.Identity.GetUserId();
@@ -93,16 +89,24 @@ namespace Events.Web.Controllers
             }));
         }
 
-        //
-        // POST: /Friends/Create
         public ActionResult SendFrindRequest(string id)
         {
-            //TODO Check if there is a friendsrequest with the user IDs flipped (From/To) before sending it (consider Declined/Approved flags)
-            eventsdb.FriendRequests.Add(new FriendRequest() { 
-                                         FromUser = this.User.Identity.GetUserId(),
-                                         ToUser = id});
+            var currentUser = this.User.Identity.GetUserId();
 
-            eventsdb.SaveChanges();
+            bool existingFriendship = eventsdb.FriendRequests.Any(fr => (fr.FromUser.Equals(id, StringComparison.InvariantCultureIgnoreCase)
+                                                              && fr.ToUser.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase) && fr.Declined == false && fr.Approved == false)
+                                                        || (fr.FromUser.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase)
+                                                              && fr.ToUser.Equals(id, StringComparison.InvariantCultureIgnoreCase) && fr.Declined == false && fr.Approved == false));
+            if (!existingFriendship)
+            {
+                eventsdb.FriendRequests.Add(new FriendRequest()
+                {
+                    FromUser = currentUser,
+                    ToUser = id
+                });
+
+                eventsdb.SaveChanges();
+            }
 
             return Redirect("~/Friends/Index");
         }
@@ -149,21 +153,19 @@ namespace Events.Web.Controllers
             return Redirect("~/Friends/Index");
         }
 
-        //
-        // POST: /Friends/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+        public ActionResult Delete(string id)
+        {
+                string currentUser = this.User.Identity.GetUserId();
+
+                var friendships = eventsdb.Friendships.Where(fr => (fr.Friend1.Equals(id, StringComparison.InvariantCultureIgnoreCase)
+                                                  && fr.Friend2.Equals(currentUser,StringComparison.InvariantCultureIgnoreCase))
+                                                  || (fr.Friend1.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase)
+                                                  && fr.Friend2.Equals(id,StringComparison.InvariantCultureIgnoreCase)));
+                eventsdb.Friendships.RemoveRange(friendships);
+                eventsdb.SaveChanges();
+
+                return Redirect("~/Friends/Index");
         }
     }
 }

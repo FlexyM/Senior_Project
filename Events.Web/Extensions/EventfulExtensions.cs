@@ -38,5 +38,15 @@ namespace Events.Web.Extensions
 
             return model.AsEnumerable();
         }
+
+        public static IEnumerable<EventViewModel> AddMissingImagesToTheirEvents(this IOrderedEnumerable<EventViewModel> EventfulEvents)
+        {
+            foreach(var evnt in EventfulEvents)
+            {
+                if(string.IsNullOrEmpty(evnt.ImageURI))
+                    evnt.ImageURI = "http://localhost:9999/EventImages/Default/img.jpg";
+            }
+            return EventfulEvents;
+        }
     }
 }
