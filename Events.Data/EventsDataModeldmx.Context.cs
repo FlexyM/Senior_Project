@@ -29,7 +29,6 @@ namespace Events.Data
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<EventTag> EventTags { get; set; }
-        public virtual DbSet<FollowRequest> FollowRequests { get; set; }
         public virtual DbSet<Followship> Followships { get; set; }
         public virtual DbSet<FriendRequest> FriendRequests { get; set; }
         public virtual DbSet<Friendship> Friendships { get; set; }

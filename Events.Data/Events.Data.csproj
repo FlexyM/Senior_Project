@@ -85,9 +85,6 @@
     <Compile Include="EventTag.cs">
       <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
     </Compile>
-    <Compile Include="FollowRequest.cs">
-      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
-    </Compile>
     <Compile Include="Followship.cs">
       <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
     </Compile>

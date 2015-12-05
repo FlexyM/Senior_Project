@@ -9,7 +9,6 @@ using Microsoft.AspNet.Identity;
 using Events.External;
 using System.Web;
 using System.Collections.Generic;
-using Events.Web.Extensions;
 
 namespace Events.Web.Controllers
 {

@@ -39,9 +39,13 @@
             @Html.DisplayFor(modelItem => item.Email)
         </td>
         <td>
-            @Html.ActionLink("Delete", "Delete", new {  id = item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
             
-            @Html.ActionLink("Follow", "Follow", new { id = item.Id })
+            @if(item.DisplayFollow)
+            {
+                @Html.ActionLink("Follow", "FollowNewUser", "Follow", new { id = item.Id }, null);
+            }
+            
         </td>
     </tr>
 }

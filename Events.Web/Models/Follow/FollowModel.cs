@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Events.Web.Models.Friends
+namespace Events.Web.Models.Follow
 {
-    public class FriendsModel
+    public class FollowModel
     {
         public string Id { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
-        public bool DisplayFollow { get; set; }
     }
 }

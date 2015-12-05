@@ -25,6 +25,9 @@ namespace Events.Web.Controllers
             List<AspNetUser> friends = friendships.Where(f => f.Friend1 != userid).Select(f => f.AspNetUser).ToList();
             friends.AddRange(friendships.Where(f => f.Friend2 != userid).Select(f => f.AspNetUser1).ToList());
 
+            //Get followers
+            List<string> followerIds = GetFollowers();
+
             //Get pending friends requests
             List<AspNetUser> pendingRequests = eventsdb.FriendRequests.Where(fr => fr.ToUser.Equals(userid, StringComparison.InvariantCultureIgnoreCase)
                                                                                 && !fr.Approved
@@ -39,24 +42,27 @@ namespace Events.Web.Controllers
             model.Friends = friends.Select(f => new FriendsModel 
                                             { 
                                                 Id = f.Id,
-                                                Email = f.Email,
-                                                FullName = f.FullName
+                                                Email = f.UserName,
+                                                FullName = f.FullName,
+                                                DisplayFollow = !followerIds.Any(f1 => f1.Equals(f.Id,StringComparison.InvariantCultureIgnoreCase)) 
                                             }).ToList();
 
             //Add pending requests to model
             model.PendingRequests = pendingRequests.Select(f => new FriendsModel
                                                         {
                                                             Id = f.Id,
-                                                            Email = f.Email,
-                                                            FullName = f.FullName
+                                                            Email = f.UserName,
+                                                            FullName = f.FullName,
+                                                            DisplayFollow = false
                                                         }).ToList();
 
             //Add sent requests to model
             model.SentRequests = sentRequests.Select(f => new FriendsModel
                                                     {
                                                         Id = f.Id,
-                                                        Email = f.Email,
-                                                        FullName = f.FullName
+                                                        Email = f.UserName,
+                                                        FullName = f.FullName,
+                                                        DisplayFollow = false
                                                     }).ToList();
 
             return View("FriendsView", model);
@@ -73,7 +79,7 @@ namespace Events.Web.Controllers
             friends.AddRange(friendships.Where(f => f.Friend2 != userid).Select(f => f.AspNetUser1).ToList());
 
             var searchUsers = from users in eventsdb.AspNetUsers
-                        where (users.Email.Equals(emailAddress, StringComparison.InvariantCultureIgnoreCase)
+                              where (users.UserName.Equals(emailAddress, StringComparison.InvariantCultureIgnoreCase)
                             || users.FullName.Contains(emailAddress))
                         select users;
 
@@ -84,7 +90,7 @@ namespace Events.Web.Controllers
             return View("NonFriendsView", nonFriends.Select(f => new FriendsModel
             {
                 Id = f.Id,
-                Email = f.Email,
+                Email = f.UserName,
                 FullName = f.FullName
             }));
         }
@@ -108,7 +114,7 @@ namespace Events.Web.Controllers
                 eventsdb.SaveChanges();
             }
 
-            return Redirect("~/Friends/Index");
+            return Redirect("~/Friends");
         }
 
         public ActionResult AcceptFriend(string id)
@@ -130,7 +136,7 @@ namespace Events.Web.Controllers
 
             eventsdb.SaveChanges();
 
-            return Redirect("~/Friends/Index");
+            return Redirect("~/Friends");
         }
 
         public ActionResult DeclineFriend(string id)
@@ -150,22 +156,39 @@ namespace Events.Web.Controllers
 
             eventsdb.SaveChanges();
 
-            return Redirect("~/Friends/Index");
+            return Redirect("~/Friends");
         }
-
 
         public ActionResult Delete(string id)
         {
-                string currentUser = this.User.Identity.GetUserId();
+            string currentUser = this.User.Identity.GetUserId();
 
-                var friendships = eventsdb.Friendships.Where(fr => (fr.Friend1.Equals(id, StringComparison.InvariantCultureIgnoreCase)
-                                                  && fr.Friend2.Equals(currentUser,StringComparison.InvariantCultureIgnoreCase))
-                                                  || (fr.Friend1.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase)
-                                                  && fr.Friend2.Equals(id,StringComparison.InvariantCultureIgnoreCase)));
-                eventsdb.Friendships.RemoveRange(friendships);
-                eventsdb.SaveChanges();
+            //Remove Friends
+            var friendships = eventsdb.Friendships.Where(fr => (fr.Friend1.Equals(id, StringComparison.InvariantCultureIgnoreCase)
+                                              && fr.Friend2.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase))
+                                              || (fr.Friend1.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase)
+                                              && fr.Friend2.Equals(id, StringComparison.InvariantCultureIgnoreCase)));
+            eventsdb.Friendships.RemoveRange(friendships);
 
-                return Redirect("~/Friends/Index");
+            //Remove Followers
+            var friendship = eventsdb.Followships.Where(f => f.Follower1.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase)
+                                          && f.Follower2.Equals(id, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            
+            friendship.AddRange(eventsdb.Followships.Where(f => f.Follower2.Equals(currentUser, StringComparison.InvariantCultureIgnoreCase)
+                                          && f.Follower1.Equals(id, StringComparison.InvariantCultureIgnoreCase)));
+
+            eventsdb.Followships.RemoveRange(friendship);
+
+            eventsdb.SaveChanges();
+
+            return Redirect("~/Friends");
+        }
+
+        private List<string> GetFollowers()
+        {
+            string userId = this.User.Identity.GetUserId();
+
+            return eventsdb.Followships.Where(f => f.Follower1.Equals(userId, StringComparison.InvariantCultureIgnoreCase)).Select(f => f.AspNetUser1.Id).ToList();
         }
     }
 }

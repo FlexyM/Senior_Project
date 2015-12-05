@@ -18,8 +18,6 @@ namespace Events.Data
         {
             this.Comments = new HashSet<Comment>();
             this.Events = new HashSet<Event>();
-            this.FollowRequests = new HashSet<FollowRequest>();
-            this.FollowRequests1 = new HashSet<FollowRequest>();
             this.Followships = new HashSet<Followship>();
             this.Followships1 = new HashSet<Followship>();
             this.FriendRequests = new HashSet<FriendRequest>();
@@ -44,8 +42,6 @@ namespace Events.Data
     
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Event> Events { get; set; }
-        public virtual ICollection<FollowRequest> FollowRequests { get; set; }
-        public virtual ICollection<FollowRequest> FollowRequests1 { get; set; }
         public virtual ICollection<Followship> Followships { get; set; }
         public virtual ICollection<Followship> Followships1 { get; set; }
         public virtual ICollection<FriendRequest> FriendRequests { get; set; }

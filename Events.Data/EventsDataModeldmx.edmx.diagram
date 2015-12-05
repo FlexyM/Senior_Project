@@ -9,15 +9,12 @@
         <EntityTypeShape EntityType="EventsDataModel.Comment" Width="1.5" PointX="5.25" PointY="8.625" IsExpanded="true" />
         <EntityTypeShape EntityType="EventsDataModel.Event" Width="1.5" PointX="3" PointY="6.375" IsExpanded="true" />
         <EntityTypeShape EntityType="EventsDataModel.EventTag" Width="1.5" PointX="5.25" PointY="6" IsExpanded="true" />
-        <EntityTypeShape EntityType="EventsDataModel.FollowRequest" Width="1.5" PointX="3" PointY="10.25" IsExpanded="true" />
         <EntityTypeShape EntityType="EventsDataModel.Followship" Width="1.5" PointX="3" PointY="13.25" IsExpanded="true" />
         <EntityTypeShape EntityType="EventsDataModel.FriendRequest" Width="1.5" PointX="3" PointY="16.125" IsExpanded="true" />
         <EntityTypeShape EntityType="EventsDataModel.Friendship" Width="1.5" PointX="3" PointY="19" IsExpanded="true" />
         <EntityTypeShape EntityType="EventsDataModel.Tag" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
         <AssociationConnector Association="EventsDataModel.FK_dbo_Comments_dbo_AspNetUsers_AuthorId" ManuallyRouted="false" />
         <AssociationConnector Association="EventsDataModel.FK_dbo_Events_dbo_AspNetUsers_AuthorId" ManuallyRouted="false" />
-        <AssociationConnector Association="EventsDataModel.FK_FollowRequest_AspNetUsers" ManuallyRouted="false" />
-        <AssociationConnector Association="EventsDataModel.FK_FollowRequest_AspNetUsers1" ManuallyRouted="false" />
         <AssociationConnector Association="EventsDataModel.FK_Followship_AspNetUsers" ManuallyRouted="false" />
         <AssociationConnector Association="EventsDataModel.FK_Followship_AspNetUsers1" ManuallyRouted="false" />
         <AssociationConnector Association="EventsDataModel.FK_FriendRequests_AspNetUsers" ManuallyRouted="false" />

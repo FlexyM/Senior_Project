@@ -62,15 +62,6 @@
           <Property Name="EventId" Type="int" Nullable="false" />
           <Property Name="TagId" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="FollowRequest">
-          <Key>
-            <PropertyRef Name="FollowRequestId" />
-          </Key>
-          <Property Name="FollowRequestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FromUser" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="ToUser" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="Approved" Type="bit" Nullable="false" />
-        </EntityType>
         <EntityType Name="Followship">
           <Key>
             <PropertyRef Name="FollowshipId" />
@@ -179,30 +170,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_FollowRequest_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="FollowRequest" Type="Self.FollowRequest" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="FollowRequest">
-              <PropertyRef Name="FromUser" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_FollowRequest_AspNetUsers1">
-          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
-          <End Role="FollowRequest" Type="Self.FollowRequest" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="FollowRequest">
-              <PropertyRef Name="ToUser" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Followship_AspNetUsers">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
           <End Role="Followship" Type="Self.Followship" Multiplicity="*" />
@@ -281,7 +248,6 @@
           <EntitySet Name="EventImage" EntityType="Self.EventImage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Events" EntityType="Self.Events" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EventTag" EntityType="Self.EventTag" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="FollowRequest" EntityType="Self.FollowRequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Followship" EntityType="Self.Followship" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FriendRequests" EntityType="Self.FriendRequests" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Friendship" EntityType="Self.Friendship" Schema="dbo" store:Type="Tables" />
@@ -309,14 +275,6 @@
           <AssociationSet Name="FK_EventTag_Tag" Association="Self.FK_EventTag_Tag">
             <End Role="Tag" EntitySet="Tag" />
             <End Role="EventTag" EntitySet="EventTag" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FollowRequest_AspNetUsers" Association="Self.FK_FollowRequest_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="FollowRequest" EntitySet="FollowRequest" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FollowRequest_AspNetUsers1" Association="Self.FK_FollowRequest_AspNetUsers1">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="FollowRequest" EntitySet="FollowRequest" />
           </AssociationSet>
           <AssociationSet Name="FK_Followship_AspNetUsers" Association="Self.FK_Followship_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -366,8 +324,6 @@
           <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Comments" Relationship="Self.FK_dbo_Comments_dbo_AspNetUsers_AuthorId" FromRole="AspNetUsers" ToRole="Comments" />
           <NavigationProperty Name="Events" Relationship="Self.FK_dbo_Events_dbo_AspNetUsers_AuthorId" FromRole="AspNetUsers" ToRole="Events" />
-          <NavigationProperty Name="FollowRequests" Relationship="Self.FK_FollowRequest_AspNetUsers" FromRole="AspNetUsers" ToRole="FollowRequest" />
-          <NavigationProperty Name="FollowRequests1" Relationship="Self.FK_FollowRequest_AspNetUsers1" FromRole="AspNetUsers" ToRole="FollowRequest" />
           <NavigationProperty Name="Followships" Relationship="Self.FK_Followship_AspNetUsers" FromRole="AspNetUsers" ToRole="Followship" />
           <NavigationProperty Name="Followships1" Relationship="Self.FK_Followship_AspNetUsers1" FromRole="AspNetUsers" ToRole="Followship" />
           <NavigationProperty Name="FriendRequests" Relationship="Self.FK_FriendRequests_AspNetUsers" FromRole="AspNetUsers" ToRole="FriendRequests" />
@@ -413,17 +369,6 @@
           <Property Name="TagId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Event" Relationship="Self.FK_EventTag_Events" FromRole="EventTag" ToRole="Events" />
           <NavigationProperty Name="Tag" Relationship="Self.FK_EventTag_Tag" FromRole="EventTag" ToRole="Tag" />
-        </EntityType>
-        <EntityType Name="FollowRequest">
-          <Key>
-            <PropertyRef Name="FollowRequestId" />
-          </Key>
-          <Property Name="FollowRequestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FromUser" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ToUser" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Approved" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="AspNetUser" Relationship="Self.FK_FollowRequest_AspNetUsers" FromRole="FollowRequest" ToRole="AspNetUsers" />
-          <NavigationProperty Name="AspNetUser1" Relationship="Self.FK_FollowRequest_AspNetUsers1" FromRole="FollowRequest" ToRole="AspNetUsers" />
         </EntityType>
         <EntityType Name="Followship">
           <Key>
@@ -487,30 +432,6 @@
             </Principal>
             <Dependent Role="Events">
               <PropertyRef Name="AuthorId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_FollowRequest_AspNetUsers">
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
-          <End Role="FollowRequest" Type="Self.FollowRequest" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="FollowRequest">
-              <PropertyRef Name="FromUser" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_FollowRequest_AspNetUsers1">
-          <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1" />
-          <End Role="FollowRequest" Type="Self.FollowRequest" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AspNetUsers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="FollowRequest">
-              <PropertyRef Name="ToUser" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -629,7 +550,6 @@
           <EntitySet Name="Comments" EntityType="Self.Comment" />
           <EntitySet Name="Events" EntityType="Self.Event" />
           <EntitySet Name="EventTags" EntityType="Self.EventTag" />
-          <EntitySet Name="FollowRequests" EntityType="Self.FollowRequest" />
           <EntitySet Name="Followships" EntityType="Self.Followship" />
           <EntitySet Name="FriendRequests" EntityType="Self.FriendRequest" />
           <EntitySet Name="Friendships" EntityType="Self.Friendship" />
@@ -641,14 +561,6 @@
           <AssociationSet Name="FK_dbo_Events_dbo_AspNetUsers_AuthorId" Association="Self.FK_dbo_Events_dbo_AspNetUsers_AuthorId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="Events" EntitySet="Events" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FollowRequest_AspNetUsers" Association="Self.FK_FollowRequest_AspNetUsers">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="FollowRequest" EntitySet="FollowRequests" />
-          </AssociationSet>
-          <AssociationSet Name="FK_FollowRequest_AspNetUsers1" Association="Self.FK_FollowRequest_AspNetUsers1">
-            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="FollowRequest" EntitySet="FollowRequests" />
           </AssociationSet>
           <AssociationSet Name="FK_Followship_AspNetUsers" Association="Self.FK_Followship_AspNetUsers">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
@@ -769,16 +681,6 @@
                 <ScalarProperty Name="EventTagId" ColumnName="EventTagId" />
                 <ScalarProperty Name="EventId" ColumnName="EventId" />
                 <ScalarProperty Name="TagId" ColumnName="TagId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="FollowRequests">
-            <EntityTypeMapping TypeName="EventsDataModel.FollowRequest">
-              <MappingFragment StoreEntitySet="FollowRequest">
-                <ScalarProperty Name="FollowRequestId" ColumnName="FollowRequestId" />
-                <ScalarProperty Name="FromUser" ColumnName="FromUser" />
-                <ScalarProperty Name="ToUser" ColumnName="ToUser" />
-                <ScalarProperty Name="Approved" ColumnName="Approved" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
