@@ -37,12 +37,15 @@
             get
             {
                 return e => new EventDetailsViewModel()
-                {                    
+                {
                     Id = e.Id.ToString(),
                     Title = e.Title,
-                    //TODO Add StartDateTime
-                    //TODO Add Duration
-                    //TODO Add Location
+                    Address = e.Address,
+                    City = e.City,
+                    State = e.State,
+                    Latitude = e.Lat,
+                    Longitude = e.Lon,
+                    Zip = e.Zip.HasValue? e.Zip.Value : 0,
                     Description = e.Description,
                     Comments = e.Comments.AsQueryable().Select(CommentViewModel.ViewModel),
                     AuthorId = e.AspNetUser.Id

@@ -37,7 +37,7 @@
                     Title = e.Title,
                     StartDateTime = e.StartDateTime,
                     Duration = e.Duration,
-                    Location = e.Location,
+                    Location = e.Address + ", " + e.City + ", " + e.State + ", " + (e.Zip > 9999 ? e.Zip.ToString() : ""),
                     Author = e.AspNetUser.FullName,
                 };
             }

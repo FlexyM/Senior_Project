@@ -1,27 +1,29 @@
 ﻿using System.Web.Mvc;
+using System;
+using System.Linq;
+
+using Events.Data;
+using Events.Web.Extensions;
+using Events.Web.Models;
+
+using Microsoft.AspNet.Identity;
+using Events.External;
+using System.Web;
+using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Web.Helpers;
+using System.Net.Http.Headers;
 
 namespace Events.Web.Controllers
 {
-    using System;
-    using System.Linq;
-
-    using Events.Data;
-    using Events.Web.Extensions;
-    using Events.Web.Models;
-
-    using Microsoft.AspNet.Identity;
-    using Events.External;
-    using System.Web;
-    using System.Collections.Generic;
-    using System.IO;
-
     public class EventsController : BaseController
     {
         [Authorize]
         public ActionResult My()
         {
             string currentUserId = this.User.Identity.GetUserId();
-            
+
             var events = this.eventsdb.Events
                 .Where(e => e.AuthorId == currentUserId)
                 .OrderBy(e => e.StartDateTime);
@@ -49,6 +51,20 @@ namespace Events.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(EventInputModel model)
         {
+            string lat = string.Empty;
+            string lon = string.Empty;
+            EventfulSearch coorResolver = new EventfulSearch();
+            string[] coord = resolveCoordinates(model.Address, model.City, model.State, model.Zip);
+
+            int zip = 0;
+            int.TryParse(model.Zip, out zip);
+
+            if (coord != null && coord.Length == 2)
+            {
+                lat = coord[0];
+                lon = coord[1];
+            }
+
             if (model != null && this.ModelState.IsValid)
             {
                 var e = new Event()
@@ -58,7 +74,12 @@ namespace Events.Web.Controllers
                     StartDateTime = model.StartDateTime,
                     Duration = model.Duration,
                     Description = model.Description,
-                    Location = model.Location,
+                    Address = model.Address,
+                    City = model.City,
+                    Lat = lat,
+                    Lon = lon,
+                    State = model.State,
+                    Zip = zip > 9999 ? new Nullable<int>(zip) : null,
                     IsPublic = model.IsPublic
                 };
 
@@ -104,13 +125,19 @@ namespace Events.Web.Controllers
                 return this.RedirectToAction("My");
             }
 
+            int zip = 0;
+            int.TryParse(model.Zip, out zip);
+
             if (model != null && this.ModelState.IsValid)
             {
                 eventToEdit.Title = model.Title;
                 eventToEdit.StartDateTime = model.StartDateTime;
                 eventToEdit.Duration = model.Duration;
                 eventToEdit.Description = model.Description;
-                eventToEdit.Location = model.Location;
+                eventToEdit.Address = model.Address;
+                eventToEdit.City = model.City;
+                eventToEdit.State = model.State;
+                eventToEdit.Zip = zip > 9999 ? new Nullable<int>(zip) : null;
                 eventToEdit.IsPublic = model.IsPublic;
 
                 this.db.SaveChanges();
@@ -270,6 +297,62 @@ namespace Events.Web.Controllers
                     eventViews[i].ImageURI = "http://localhost:9999/EventImages/Default/img.jpg";
             }
             return eventViews;
+        }
+
+        private string[] resolveCoordinates(string address, string city, string state, string zip)
+        {
+            string result;
+
+            using (var client = new HttpClient())
+            {
+                HttpResponseMessage response;
+
+                try
+                {
+                    string apiKey = System.Configuration.ConfigurationManager.AppSettings["Google Maps API Key"];
+
+                    client.BaseAddress = new Uri(@"https://maps.googleapis.com/maps/api/geocode/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    int i = 0;
+                    if (int.TryParse(zip, out i) && i > 9999)
+                    {
+                        response = client.GetAsync(string.Format(@"json?address={0},+{1},+{2},+{3}&key={4}", address, city, state, zip, apiKey)).Result;
+                    }
+                    else
+                    {
+                        response = client.GetAsync(string.Format(@"json?address={0},+{1},+{2}&key={3}", address, city, state, apiKey)).Result;
+                    }
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+            }
+
+            if (result.Contains("\"location\"") && result.Contains("\"lng\"") && result.Contains("\"lat\""))
+            {
+                string[] arr = new string[2];
+                int latStart = result.IndexOf("\"lat\" : ") + 8;
+                int lonStart = result.IndexOf("\"lng\" : ") + 8;
+
+                arr[0] = result.Substring(latStart, result.IndexOf(",", latStart) - latStart).Trim();
+                arr[1] = result.Substring(lonStart, result.IndexOf("\n", lonStart) - lonStart).Trim();
+
+                return arr;
+            }
+            else
+                return null;
         }
     }
 }

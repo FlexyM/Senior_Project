@@ -27,8 +27,13 @@ namespace Events.Data
         public Nullable<System.TimeSpan> Duration { get; set; }
         public string AuthorId { get; set; }
         public string Description { get; set; }
-        public string Location { get; set; }
         public bool IsPublic { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public Nullable<int> Zip { get; set; }
+        public string Lat { get; set; }
+        public string Lon { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

@@ -17,6 +17,7 @@
         [Display(Name = "Title *")]
         public string Title { get; set; }
 
+        [Required(ErrorMessage = "Date and Time is required.")]
         [DataType(DataType.DateTime)]
         [Display(Name = "Date and Time *")]
         public DateTime StartDateTime { get; set; }
@@ -25,12 +26,29 @@
 
         public string Description { get; set; }
 
-        [MaxLength(200)]
-        public string Location { get; set; }
+        [Required(ErrorMessage = "Address is required.")]
+        [MaxLength(250)]
+        [Display(Name = "Address *")]
+        public string Address { get; set; }
+
+        [Required(ErrorMessage = "City is required.")]
+        [MaxLength(150)]
+        [Display(Name = "City *")]
+        public string City { get; set; }
+
+        [Required(ErrorMessage = "State is required.")]
+        [MaxLength(2)]
+        [Display(Name = "State")]
+        public string State { get; set; }
+
+        [RegularExpression(@"^\d{5}$", ErrorMessage= "Please enter a 5 digit zip code.")]
+        [Display(Name = "Zip Code")]
+        [MaxLength(5)]
+        public string Zip { get; set; }
 
         [Display(Name = "Is Public?")]
         public bool IsPublic { get; set; }
-        
+
         public static EventInputModel CreateFromEvent(Event e)
         {
             return new EventInputModel()
@@ -38,7 +56,10 @@
                 Title = e.Title,
                 StartDateTime = e.StartDateTime,
                 Duration = e.Duration,
-                Location = e.Location,
+                Address = e.Address,
+                City = e.City,
+                State = e.State,
+                Zip = e.Zip.GetValueOrDefault() > 9999 ? e.Zip.GetValueOrDefault().ToString() : string.Empty,
                 Description = e.Description,
                 IsPublic = e.IsPublic
             };
