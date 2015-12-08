@@ -34,5 +34,6 @@ namespace Events.Data
         public virtual DbSet<Friendship> Friendships { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<EventImage> EventImages { get; set; }
+        public virtual DbSet<EventInvite> EventInvites { get; set; }
     }
 }

@@ -19,6 +19,7 @@ namespace Events.Data
             this.Comments = new HashSet<Comment>();
             this.EventTags = new HashSet<EventTag>();
             this.EventImages = new HashSet<EventImage>();
+            this.EventInvites = new HashSet<EventInvite>();
         }
     
         public int Id { get; set; }
@@ -39,5 +40,6 @@ namespace Events.Data
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<EventTag> EventTags { get; set; }
         public virtual ICollection<EventImage> EventImages { get; set; }
+        public virtual ICollection<EventInvite> EventInvites { get; set; }
     }
 }

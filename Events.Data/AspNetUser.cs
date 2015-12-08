@@ -24,6 +24,8 @@ namespace Events.Data
             this.FriendRequests1 = new HashSet<FriendRequest>();
             this.Friendships = new HashSet<Friendship>();
             this.Friendships1 = new HashSet<Friendship>();
+            this.EventInvites = new HashSet<EventInvite>();
+            this.EventInvites1 = new HashSet<EventInvite>();
         }
     
         public string Id { get; set; }
@@ -48,5 +50,7 @@ namespace Events.Data
         public virtual ICollection<FriendRequest> FriendRequests1 { get; set; }
         public virtual ICollection<Friendship> Friendships { get; set; }
         public virtual ICollection<Friendship> Friendships1 { get; set; }
+        public virtual ICollection<EventInvite> EventInvites { get; set; }
+        public virtual ICollection<EventInvite> EventInvites1 { get; set; }
     }
 }

@@ -187,6 +187,7 @@
     <Compile Include="Models\Events\EventDetailsViewModel.cs" />
     <Compile Include="Models\Events\EventInputModel.cs" />
     <Compile Include="Models\Events\EventViewModel.cs" />
+    <Compile Include="Models\Events\MyUpcomingEventsViewModel.cs" />
     <Compile Include="Models\Follow\FollowModel.cs" />
     <Compile Include="Models\Friends\FriendsIndexPageModel.cs" />
     <Compile Include="Models\Friends\FriendsModel.cs" />
@@ -296,6 +297,7 @@
     <Content Include="Views\Friends\FriendsView.cshtml" />
     <Content Include="Views\Friends\NonFriendsView.cshtml" />
     <Content Include="Views\Follow\FollowView.cshtml" />
+    <Content Include="Views\Events\MyUpComingEventsView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

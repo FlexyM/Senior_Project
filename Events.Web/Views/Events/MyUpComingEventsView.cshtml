@@ -1,0 +1,58 @@
+﻿@model List<Events.Web.Models.MyUpcomingEventsViewModel>
+
+    @{
+        ViewBag.Title = "My Upcoming Events";
+    }
+
+    <h1 class="event-group-heading">My Upcoming Events</h1>
+    <div class="row">
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <table>
+                @foreach (var invite in @Model)
+                {
+                    <tr>
+                        <td colspan="2">
+                            <h3>@invite.Event.Title</h3>
+                            <h6>@invite.Event.StartDateTime</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <h5>Location; @invite.Event.Location</h5>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <h6>Invited by: @invite.User</h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        @if (@invite.Accepted)
+                        {
+                            <td colspan="2">
+                                <span>Accpeted</span>
+                            </td>
+                        }
+                        else if (@invite.Declined)
+                        {
+                            <td colspan="2">
+                                <span>Declined</span>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                @Html.ActionLink("Accept", "AcceptInvite", new { id = @invite.InvitationId })
+                            </td>
+                            <td>
+                                @Html.ActionLink("Decline", "DeclineInvite", new { id = @invite.InvitationId })
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    @section scripts {
+        @Scripts.Render("~/bundles/ajax")
+    }

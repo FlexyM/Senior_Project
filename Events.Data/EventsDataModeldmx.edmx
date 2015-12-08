@@ -41,6 +41,17 @@
           <Property Name="EventId" Type="int" Nullable="false" />
           <Property Name="ImageName" Type="varchar" MaxLength="500" Nullable="false" />
         </EntityType>
+        <EntityType Name="EventInvites">
+          <Key>
+            <PropertyRef Name="EventInvitationId" />
+          </Key>
+          <Property Name="EventInvitationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EventId" Type="int" Nullable="false" />
+          <Property Name="FromUser" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="ToUser" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="Attending" Type="bit" Nullable="false" />
+          <Property Name="Declined" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="Events">
           <Key>
             <PropertyRef Name="Id" />
@@ -151,6 +162,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EventInvites_AspNetUsers">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="EventInvites" Type="Self.EventInvites" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventInvites">
+              <PropertyRef Name="FromUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventInvites_AspNetUsers1">
+          <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1" />
+          <End Role="EventInvites" Type="Self.EventInvites" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUsers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventInvites">
+              <PropertyRef Name="ToUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventInvites_Events">
+          <End Role="Events" Type="Self.Events" Multiplicity="1" />
+          <End Role="EventInvites" Type="Self.EventInvites" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Events">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventInvites">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EventTag_Events">
           <End Role="Events" Type="Self.Events" Multiplicity="1" />
           <End Role="EventTag" Type="Self.EventTag" Multiplicity="*" />
@@ -251,6 +298,7 @@
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Comments" EntityType="Self.Comments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EventImage" EntityType="Self.EventImage" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EventInvites" EntityType="Self.EventInvites" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Events" EntityType="Self.Events" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EventTag" EntityType="Self.EventTag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Followship" EntityType="Self.Followship" Schema="dbo" store:Type="Tables" />
@@ -272,6 +320,18 @@
           <AssociationSet Name="FK_EventImage_Events" Association="Self.FK_EventImage_Events">
             <End Role="Events" EntitySet="Events" />
             <End Role="EventImage" EntitySet="EventImage" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventInvites_AspNetUsers" Association="Self.FK_EventInvites_AspNetUsers">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="EventInvites" EntitySet="EventInvites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventInvites_AspNetUsers1" Association="Self.FK_EventInvites_AspNetUsers1">
+            <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="EventInvites" EntitySet="EventInvites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventInvites_Events" Association="Self.FK_EventInvites_Events">
+            <End Role="Events" EntitySet="Events" />
+            <End Role="EventInvites" EntitySet="EventInvites" />
           </AssociationSet>
           <AssociationSet Name="FK_EventTag_Events" Association="Self.FK_EventTag_Events">
             <End Role="Events" EntitySet="Events" />
@@ -335,6 +395,8 @@
           <NavigationProperty Name="FriendRequests1" Relationship="Self.FK_FriendRequests_FriendRequests" FromRole="AspNetUsers" ToRole="FriendRequests" />
           <NavigationProperty Name="Friendships" Relationship="Self.FK_Friendship_AspNetUsers" FromRole="AspNetUsers" ToRole="Friendship" />
           <NavigationProperty Name="Friendships1" Relationship="Self.FK_Friendship_AspNetUsers1" FromRole="AspNetUsers" ToRole="Friendship" />
+          <NavigationProperty Name="EventInvites" Relationship="EventsDataModel.FK_EventInvites_AspNetUsers" FromRole="AspNetUser" ToRole="EventInvite" />
+          <NavigationProperty Name="EventInvites1" Relationship="EventsDataModel.FK_EventInvites_AspNetUsers1" FromRole="AspNetUser" ToRole="EventInvite" />
         </EntityType>
         <EntityType Name="Comment">
           <Key>
@@ -369,6 +431,7 @@
           <Property Name="Zip" Type="Int32" />
           <Property Name="Lat" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Lon" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EventInvites" Relationship="EventsDataModel.FK_EventInvites_Events" FromRole="Event" ToRole="EventInvite" />
         </EntityType>
         <EntityType Name="EventTag">
           <Key>
@@ -613,6 +676,19 @@
             <End Role="Event" EntitySet="Events" />
             <End Role="EventImage" EntitySet="EventImages" />
           </AssociationSet>
+          <EntitySet Name="EventInvites" EntityType="EventsDataModel.EventInvite" />
+          <AssociationSet Name="FK_EventInvites_AspNetUsers" Association="EventsDataModel.FK_EventInvites_AspNetUsers">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="EventInvite" EntitySet="EventInvites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventInvites_AspNetUsers1" Association="EventsDataModel.FK_EventInvites_AspNetUsers1">
+            <End Role="AspNetUser" EntitySet="AspNetUsers" />
+            <End Role="EventInvite" EntitySet="EventInvites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EventInvites_Events" Association="EventsDataModel.FK_EventInvites_Events">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="EventInvite" EntitySet="EventInvites" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="EventImage">
           <Key>
@@ -631,6 +707,56 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="EventImage">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="EventInvite">
+          <Key>
+            <PropertyRef Name="EventInvitationId" />
+          </Key>
+          <Property Name="EventInvitationId" Type="Int32" Nullable="false" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <Property Name="FromUser" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="ToUser" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="Attending" Type="Boolean" Nullable="false" />
+          <Property Name="Declined" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AspNetUser" Relationship="EventsDataModel.FK_EventInvites_AspNetUsers" FromRole="EventInvite" ToRole="AspNetUser" />
+          <NavigationProperty Name="AspNetUser1" Relationship="EventsDataModel.FK_EventInvites_AspNetUsers1" FromRole="EventInvite" ToRole="AspNetUser" />
+          <NavigationProperty Name="Event" Relationship="EventsDataModel.FK_EventInvites_Events" FromRole="EventInvite" ToRole="Event" />
+        </EntityType>
+        <Association Name="FK_EventInvites_AspNetUsers">
+          <End Type="EventsDataModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="EventsDataModel.EventInvite" Role="EventInvite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventInvite">
+              <PropertyRef Name="FromUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventInvites_AspNetUsers1">
+          <End Type="EventsDataModel.AspNetUser" Role="AspNetUser" Multiplicity="1" />
+          <End Type="EventsDataModel.EventInvite" Role="EventInvite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AspNetUser">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventInvite">
+              <PropertyRef Name="ToUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EventInvites_Events">
+          <End Type="EventsDataModel.Event" Role="Event" Multiplicity="1" />
+          <End Type="EventsDataModel.EventInvite" Role="EventInvite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EventInvite">
               <PropertyRef Name="EventId" />
             </Dependent>
           </ReferentialConstraint>
@@ -743,6 +869,18 @@
                 <ScalarProperty Name="ImageName" ColumnName="ImageName" />
                 <ScalarProperty Name="EventId" ColumnName="EventId" />
                 <ScalarProperty Name="EventImageId" ColumnName="EventImageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EventInvites">
+            <EntityTypeMapping TypeName="EventsDataModel.EventInvite">
+              <MappingFragment StoreEntitySet="EventInvites">
+                <ScalarProperty Name="Declined" ColumnName="Declined" />
+                <ScalarProperty Name="Attending" ColumnName="Attending" />
+                <ScalarProperty Name="ToUser" ColumnName="ToUser" />
+                <ScalarProperty Name="FromUser" ColumnName="FromUser" />
+                <ScalarProperty Name="EventId" ColumnName="EventId" />
+                <ScalarProperty Name="EventInvitationId" ColumnName="EventInvitationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

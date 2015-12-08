@@ -67,6 +67,9 @@
     <Compile Include="EventImage.cs">
       <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
     </Compile>
+    <Compile Include="EventInvite.cs">
+      <DependentUpon>EventsDataModeldmx.tt</DependentUpon>
+    </Compile>
     <Compile Include="EventsDataModeldmx.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

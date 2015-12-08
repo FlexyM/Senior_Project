@@ -44,6 +44,7 @@ namespace Events.Web.Controllers
         public ActionResult Create()
         {
             ViewBag.States = GetStates();
+            ViewBag.Friends = GetFriends();
             return this.View();
         }
 
@@ -87,6 +88,23 @@ namespace Events.Web.Controllers
                 this.eventsdb.Events.Add(e);
                 this.eventsdb.SaveChanges();
 
+                List<string> invitedUsers = new List<string>();
+                if(Request["Friends"]!= null)
+                {
+                    invitedUsers = Request["Friends"].Split(',').ToList();
+                }
+
+                foreach(string invitedUser in invitedUsers)
+                {
+                    var invite = new EventInvite();
+                    invite.FromUser = this.User.Identity.GetUserId();
+                    invite.ToUser = invitedUser;
+                    invite.EventId = e.Id;
+
+                    eventsdb.EventInvites.Add(invite);
+                }
+                eventsdb.SaveChanges();
+
                 if (Request.Files != null && Request.Files.Count > 0)
                 {
                     SaveImages(e.Id);
@@ -104,6 +122,7 @@ namespace Events.Web.Controllers
         public ActionResult Edit(int id)
         {
             ViewBag.States = GetStates();
+            ViewBag.Friends = GetFriends();
 
             var eventToEdit = this.LoadEvent(id);
             if (eventToEdit == null)
@@ -183,6 +202,51 @@ namespace Events.Web.Controllers
             this.eventsdb.SaveChanges();
             this.AddNotification("Event deleted.", NotificationType.INFO);
             return this.RedirectToAction("My");
+        }
+
+        [Authorize]
+        public ActionResult MyUpcomingEvents()
+        {
+            var userId = this.User.Identity.GetUserId();
+
+            var myEvents = eventsdb.EventInvites.Where(x => x.ToUser.Equals(userId, StringComparison.InvariantCultureIgnoreCase) && x.Event.StartDateTime >= DateTime.Today);
+            var model = myEvents.OrderByDescending(x => x.Attending).ThenBy(x => x.Event.StartDateTime).ThenByDescending(x => x.Declined).Select(x => new MyUpcomingEventsViewModel()
+            {
+                InvitationId = x.EventInvitationId,
+                Accepted = x.Attending,
+                Declined = x.Declined,
+                User = x.AspNetUser.FullName,
+                Event = new EventViewModel() { 
+                    Id = x.Event.Id,
+                    Title = x.Event.Title,
+                    StartDateTime = x.Event.StartDateTime,
+                    Duration = x.Event.Duration,
+                    Location = x.Event.Address + ", " + x.Event.City + ", " + x.Event.State + (x.Event.Zip > 9999 ? ", " + x.Event.Zip.ToString() : ""),
+                    Author = x.Event.AspNetUser.FullName,
+                }
+            });
+            
+            return View("MyUpComingEventsView", model.ToList());
+        }
+
+        [Authorize]
+        public ActionResult AcceptInvite(int id)
+        {
+            var evnt = eventsdb.EventInvites.Single(i => i.EventInvitationId == id);
+            evnt.Attending = true;
+            eventsdb.SaveChanges();
+            
+            return Redirect("~/Events/MyUpcomingEvents");
+        }
+
+        [Authorize]
+        public ActionResult DeclineInvite(int id)
+        {
+            var evnt = eventsdb.EventInvites.Single(i => i.EventInvitationId == id);
+            evnt.Declined = true;
+            eventsdb.SaveChanges();
+
+            return Redirect("~/Events/MyUpcomingEvents");
         }
 
         public ActionResult EventDetailsById(int id, string eventfulId, bool eventfulEvent)
@@ -414,6 +478,28 @@ namespace Events.Web.Controllers
             states.Add(new SelectListItem { Text = "Wyoming", Value = "WY" });
 
             return states;
+        }
+
+        private IEnumerable<SelectListItem> GetFriends()
+        {
+            var userid = this.User.Identity.GetUserId();
+
+            //Get Friendships
+            var friendships = eventsdb.Friendships.Where(f => f.Friend1.Equals(userid, StringComparison.InvariantCultureIgnoreCase)
+                                                           || f.Friend2.Equals(userid, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+            //Get Friends
+            List<Events.Data.AspNetUser> friends = friendships.Where(f => f.Friend1 != userid).Select(f => f.AspNetUser).ToList();
+            friends.AddRange(friendships.Where(f => f.Friend2 != userid).Select(f => f.AspNetUser1).ToList());
+
+
+            IEnumerable<SelectListItem> result = friends.Select(f => new SelectListItem()
+            {
+                Text = f.FullName,
+                Value = f.Id
+            });
+
+            return result;
         }
     }
 }
