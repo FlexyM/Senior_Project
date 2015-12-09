@@ -282,12 +282,14 @@ namespace Events.Web.Controllers
                     result.Description = "No additional details.";
 
                 result.Id = eventfulId;
+                int zip;
+                int.TryParse(eventResult.postal_code, out zip);
 
                 result.Title = eventResult.title;
                 result.Address = eventResult.address;
                 result.City = eventResult.city;
                 result.State = eventResult.region;
-                result.Zip = Convert.ToInt32(eventResult.postal_code);
+                result.Zip = zip;
                 result.Latitude = eventResult.latitude;
                 result.Longitude = eventResult.longitude;
 

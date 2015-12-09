@@ -34,35 +34,31 @@ namespace Events.Web.Controllers
             //Getting results from Eventful
             EventfulSearch api = new EventfulSearch();
             api.Location = "Atlanta";
-            api.Date = DateTime.Now.ToString("MMMM");
+            api.Date = DateTime.Now.AddDays(1).ToString("yyyyMMdd") + "00-" + DateTime.Now.AddDays(15).ToString("yyyyMMdd") + "00";
 
             var eventfulEvents = api.Search().ConvertToEventViewModel();
 
 
             //Add the Eventful Events to the database events and resort       
-
-            result.UpcomingEvents = result.UpcomingEvents.Concat(eventfulEvents.Where(e => e.StartDateTime > DateTime.Now)).OrderBy(m => m.StartDateTime).AddMissingImagesToTheirEvents();
-            result.PassedEvents = result.PassedEvents.Concat(eventfulEvents.Where(e => e.StartDateTime <= DateTime.Now)).OrderBy(m => m.StartDateTime).AddMissingImagesToTheirEvents();
-
+            var temp = eventfulEvents.Where(e => e.StartDateTime > DateTime.Now).OrderBy(m => m.StartDateTime).AddMissingImagesToTheirEvents();
+            result.UpcomingEvents = result.UpcomingEvents.Concat(temp).ToList();
+            var temp1 = eventfulEvents.Where(e => e.StartDateTime <= DateTime.Now).OrderBy(m => m.StartDateTime).AddMissingImagesToTheirEvents();
+            result.PassedEvents = result.PassedEvents.Concat(temp1).ToList(); 
+            
             return View(result);
         }
 
-        //foreach (var evnt in searchResult.events)
-        //            {
-        //                var images = evnt.image as System.Xml.XmlNode[];
-
-        //                var url = images.Any(e => string.Equals(e.Name, "medium", StringComparison.InvariantCultureIgnoreCase)) ? 
-        //                    images.Single(e => string.Equals(e.Name, "medium", StringComparison.InvariantCultureIgnoreCase)).InnerText : "";
-        //            }
-
         [HttpPost]
-        public ActionResult Index(string location, string keyword)
+        public ActionResult Index(string location, string keyword, string fromDate, string toDate)
         {
-            var events = this.eventsdb.Events
-                .OrderBy(e => e.StartDateTime)
-                .Where(e => e.IsPublic)
-                .Select(EventViewModel.ViewModel);
+            List<EventViewModel> events;
+            //Local events search
+            events = LocalEventSearch(location, keyword);
+            
+            //Local date search
+            events = LocalEventsDateSearch(fromDate, toDate, events);
 
+            //Local events sorting
             var upcomingEvents = events.Where(e => e.StartDateTime > DateTime.Now).ToList();
             var passedEvents = events.Where(e => e.StartDateTime <= DateTime.Now).ToList();
 
@@ -79,14 +75,15 @@ namespace Events.Web.Controllers
             if (!string.IsNullOrEmpty(location))
                 api.Location = location;
 
-            api.Date = DateTime.Now.ToString("MMMM");
+            api.Date = FormatEventfulSearchDateRange(fromDate, toDate);
 
             var eventfulEvents = api.Search().ConvertToEventViewModel();
 
             //Add the Eventful Events to the database events and resort       
-
-            result.UpcomingEvents = result.UpcomingEvents.Concat(eventfulEvents.Where(e => e.StartDateTime > DateTime.Now)).OrderBy(m => m.StartDateTime);
-            result.PassedEvents = result.PassedEvents.Concat(eventfulEvents.Where(e => e.StartDateTime <= DateTime.Now)).OrderBy(m => m.StartDateTime);
+            var temp = eventfulEvents.Where(e => e.StartDateTime > DateTime.Now).OrderBy(m => m.StartDateTime).AddMissingImagesToTheirEvents();
+            result.UpcomingEvents = result.UpcomingEvents.Concat(temp).ToList();
+            var temp1 = eventfulEvents.Where(e => e.StartDateTime <= DateTime.Now).OrderBy(m => m.StartDateTime).AddMissingImagesToTheirEvents();
+            result.PassedEvents = result.PassedEvents.Concat(temp1).ToList(); 
 
             return View(result);
         }
@@ -146,6 +143,72 @@ namespace Events.Web.Controllers
 
                 return this.PartialView("_EventDetails", result);
             }
+        }
+
+        private List<EventViewModel> LocalEventSearch(string location, string keyword)
+        {
+            List<EventViewModel> events = new List<EventViewModel>();
+
+            //Local events search
+            if (!string.IsNullOrEmpty(location) && !string.IsNullOrEmpty(keyword))
+            {
+                events = this.eventsdb.Events
+                   .Where(e => e.IsPublic && e.Title.Contains(keyword) && e.City.Contains(location))
+                   .OrderBy(e => e.StartDateTime)
+                   .Select(EventViewModel.ViewModel).ToList();
+            }
+            else if (!string.IsNullOrEmpty(location))
+            {
+                events = events.Concat(this.eventsdb.Events
+                 .Where(e => e.IsPublic && e.City.Contains(location))
+                 .OrderBy(e => e.StartDateTime)
+                 .Select(EventViewModel.ViewModel)).ToList();
+            }
+            else if (!string.IsNullOrEmpty(keyword))
+            {
+                events = events.Concat(this.eventsdb.Events
+                 .Where(e => e.IsPublic && e.Title.Contains(keyword))
+                 .OrderBy(e => e.StartDateTime)
+                 .Select(EventViewModel.ViewModel)).ToList();
+            }
+
+            return events;
+        }
+
+        private List<EventViewModel> LocalEventsDateSearch(string fromDate, string toDate, List<EventViewModel> events)
+        {
+            if (!string.IsNullOrEmpty(fromDate) && !string.IsNullOrEmpty(toDate))
+            {
+                return events.Where(e => e.StartDateTime >= DateTime.Parse(fromDate) && e.StartDateTime <= DateTime.Parse(toDate)).ToList();
+            }
+            else if (!string.IsNullOrEmpty(fromDate))
+            {
+                return events.Where(e => e.StartDateTime >= DateTime.Parse(fromDate)).ToList();
+            }
+            else if (!string.IsNullOrEmpty(toDate))
+            {
+                return events.Where(e => e.StartDateTime <= DateTime.Parse(toDate)).ToList();
+            }
+            else
+                return events;
+        }
+
+        private string FormatEventfulSearchDateRange(string fromDate, string toDate)
+        {
+            if (!string.IsNullOrEmpty(fromDate) && !string.IsNullOrEmpty(toDate))
+            {
+                return DateTime.Parse(fromDate).ToString("yyyyMMdd") + "00-" + DateTime.Parse(toDate).ToString("yyyyMMdd") + "00";
+            }
+            else if (!string.IsNullOrEmpty(fromDate))
+            {
+                return DateTime.Parse(fromDate).ToString("yyyyMMdd") + "00-"; // +DateTime.Parse(fromDate).AddDays(15).ToString("yyyyMMdd") + "00";
+            }
+            else if (!string.IsNullOrEmpty(toDate))
+            {
+                return DateTime.Now.AddDays(1).ToString("yyyyMMdd") + "00-" + DateTime.Parse(toDate).ToString("yyyyMMdd") + "00";
+            }
+            else
+                return DateTime.Now.AddDays(1).ToString("yyyyMMdd") + "00-" + DateTime.Now.AddDays(15).ToString("yyyyMMdd") + "00";
         }
     }
 }

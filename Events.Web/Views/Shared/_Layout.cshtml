@@ -8,40 +8,55 @@
     @Styles.Render("~/Content/css")
     @RenderSection("styles", required: false)
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/modernizr")
-</head>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    
+    <script>
+        $(function () {
+            $("#fromDate").datepicker();
+            $("#toDate").datepicker();
+        });
+    </script>
+    </head>
 
 
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("KrFREE Events", "Index", "Home",
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("KrFREE Events", "Index", "Home",
                     new { area = "" }, new { @class = "navbar-brand" })
 
 
-                <!--niraj-->  
-                <div id="location-search" class="clearfix">
-                    <form id="site-search" action="http://localhost:9999/" method="post">
-                        <div id="header-location-change">
-                            <input type="text" name="location" id="inp-header-location-change" value="" data-ta="typeahead-location" placeholder="Atlanta" class="input-xlarge" autocomplete="off" />
-                        </div>
+                    <!--niraj-->
+                    <div id="location-search" class="clearfix">
+                        <form id="site-search" action="http://localhost:9999/" method="post">
+                            <div id="header-location-change">
+                                <input type="text" name="location" id="inp-header-location-change" value="" data-ta="typeahead-location" placeholder="Atlanta" class="input-xlarge" autocomplete="off" />
+                            </div>
 
-                        <div id="search">
-                            <div id="uni-search" class="">
+                            <div id="search">
+                                <div id="uni-search" class="">
 
-                                <input type="hidden" name="location_type" id="inp-location-type" value="metro_id" />
-                                <input type="hidden" name="location_id" id="inp-location-id" value="12" />
-                                <input type="hidden" name="location1" id="inp-location" value="Atlanta metro area" />
-                                <input type="hidden" name="area" id="inp-area" />
-                                <input type="text" name="keyword" id="inp-uni-search" placeholder="Title or Keyword" value="" data-ta="typeahead-uni-search" class="text-input input-xlarge" autocomplete="off" />
+                                    <input type="hidden" name="location_type" id="inp-location-type" value="metro_id" />
+                                    <input type="hidden" name="location_id" id="inp-location-id" value="12" />
+                                    <input type="hidden" name="location1" id="inp-location" value="Atlanta metro area" />
+                                    <input type="hidden" name="area" id="inp-area" />
+                                    <input type="text" name="keyword" id="inp-uni-search" placeholder="Title or Keyword" value="" data-ta="typeahead-uni-search" class="text-input input-xlarge" autocomplete="off" />
+                                    <br />
+                                    <input type='text' name="fromDate" id="fromDate" placeholder="From Date" value="" class="text-input input-xlarge">
+                                    <input type='text' name="toDate" id="toDate" placeholder="To Date" value="" class="text-input input-xlarge">
+
                                 <button id="btn-search-submit" class="search-button btn-group-sm btn-info" type="submit" data-ga-label="Search Button Click">Search</button>
-
+                                
                             </div>
                         </div> <!-- end search -->
                     </form>

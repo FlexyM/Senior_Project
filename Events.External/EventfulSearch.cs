@@ -44,7 +44,7 @@ namespace Events.External
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
 
-                    HttpResponseMessage response = client.GetAsync(string.Format(@"search?app_key={0}&location={1}&q={2}&date={3}", apiKey, Location, Keyword, Date)).Result;
+                    HttpResponseMessage response = client.GetAsync(string.Format(@"search?app_key={0}&location={1}&q={2}&date={3}&page_size=30", apiKey, Location, Keyword, Date)).Result;
 
                     XmlSerializer serializer = new XmlSerializer(typeof(search));
                     using (Stream stream = response.Content.ReadAsStreamAsync().Result)
